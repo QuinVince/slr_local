@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { FaPlus, FaCheck, FaTimes, FaQuestion, FaInfoCircle, FaMagic, FaTrash, FaFilter, FaFileAlt, FaUsers, FaCalendarAlt, FaArrowRight, FaCheckDouble, FaDownload } from 'react-icons/fa';
+import { FaPlus, FaCheck, FaTimes, FaQuestion, FaInfoCircle, FaMagic, FaTrash, FaFilter, FaFileAlt, FaUsers, FaCalendarAlt, FaArrowRight, FaCheckDouble, FaDownload, FaExternalLinkAlt } from 'react-icons/fa';
 import ReactSlider from 'react-slider';
 import styled from 'styled-components';
 import { SavedQuery, AnalysisData } from '../App'; // Import SavedQuery from App.tsx
@@ -18,7 +18,8 @@ export interface Document {
   authors: string[]; // Add this line
   selected: boolean;
   abstractExpanded: boolean;
-  studyType: 'rct' | 'observational' | 'meta-analysis' | 'other';
+  studyType: 'Meta-analysis' | 'Systematic Review' | 'RCT' | 'Cohort study' | 'Case-control study' | 'Case report' | 'Case series' | 'Expert opinion' | 'Narrative review' | 'Animal study' | 'In vitro study';
+  pubmedLink: string; // Change this line from optional to required
   pico: {
     population: string;
     intervention: string;
@@ -26,11 +27,6 @@ export interface Document {
     outcome: string;
     expanded: boolean;
   };
-}
-
-interface Criterion {
-  id: number;
-  description: string;
 }
 
 interface DocumentAnalysisProps {
@@ -77,7 +73,7 @@ const Track = (props: any, state: any) => <StyledTrack {...props} index={state.i
 const StudyTypeTag: React.FC<{ type: string }> = ({ type }) => {
   return (
     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
-      {type === 'rct' ? 'RCT' : type.charAt(0).toUpperCase() + type.slice(1)}
+      {type}
     </span>
   );
 };
@@ -107,7 +103,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [filterKeyword, setFilterKeyword] = useState('');
   const [tooltips, setTooltips] = useState<{[key: number]: {[key: number]: string}}>({});
-  const [dateRange, setDateRange] = useState([new Date('2023-01-01').getTime(), new Date().getTime()]);
+  const [dateRange, setDateRange] = useState([new Date('2010-01-01').getTime(), new Date().getTime()]);
   const [showFilters, setShowFilters] = useState(false);
   const [studyType, setStudyType] = useState('all');
   const [analyzedDocuments, setAnalyzedDocuments] = useState<number[]>([]);
@@ -496,7 +492,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                     <StyledSlider
                       value={dateRange}
                       onChange={(newValues: number | readonly number[], index: number) => handleDateRangeChange(newValues as number[])}
-                      min={new Date('2023-01-01').getTime()}
+                      min={new Date('2010-01-01').getTime()}
                       max={new Date().getTime()}
                       renderTrack={Track}
                       renderThumb={Thumb}
@@ -515,9 +511,17 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                     className="p-2 border border-gray-300 rounded-md w-full"
                   >
                     <option value="all">All Types</option>
-                    <option value="rct">Randomized Controlled Trial</option>
-                    <option value="observational">Observational Study</option>
-                    <option value="meta-analysis">Meta-Analysis</option>
+                    <option value="Meta-analysis">Meta-analysis</option>
+                    <option value="Systematic Review">Systematic Review</option>
+                    <option value="RCT">RCT</option>
+                    <option value="Cohort study">Cohort study</option>
+                    <option value="Case-control study">Case-control study</option>
+                    <option value="Case report">Case report</option>
+                    <option value="Case series">Case series</option>
+                    <option value="Expert opinion">Expert opinion</option>
+                    <option value="Narrative review">Narrative review</option>
+                    <option value="Animal study">Animal study</option>
+                    <option value="In vitro study">In vitro study</option>
                   </select>
                 </div>
               </div>
@@ -571,10 +575,23 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                       </div>
                     )}
                     
-                    <div className="flex items-center mt-2 text-xs text-gray-500">
-                      <YearTag date={doc.date} />
-                      <StudyTypeTag type={doc.studyType} />
-                      <AuthorsTag authors={doc.authors} />
+                    <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
+                      <div className="flex items-center">
+                        <YearTag date={doc.date} />
+                        <StudyTypeTag type={doc.studyType} />
+                        <AuthorsTag authors={doc.authors} />
+                      </div>
+                      {doc.pubmedLink && (
+                        <a 
+                          href={doc.pubmedLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-teal-600 hover:text-teal-800 flex items-center"
+                        >
+                          <FaExternalLinkAlt className="mr-1 text-xs" />
+                          <span className="text-xs">Go to source</span>
+                        </a>
+                      )}
                     </div>
                   </div>
 

@@ -33,7 +33,7 @@ export interface AnalysisData {
     authors: string[]; // Add this line
     selected: boolean;
     abstractExpanded: boolean;
-    studyType: 'rct' | 'observational' | 'meta-analysis' | 'other';
+    studyType: 'Meta-analysis' | 'Systematic Review' | 'RCT' | 'Cohort study' | 'Case-control study' | 'Case report' | 'Case series' | 'Expert opinion' | 'Narrative review' | 'Animal study' | 'In vitro study';
     pico: {
       population: string;
       intervention: string;
@@ -41,6 +41,7 @@ export interface AnalysisData {
       outcome: string;
       expanded: boolean;
     };
+    pubmedLink: string;
   }>;
   criteria: Array<{
     id: number;

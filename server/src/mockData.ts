@@ -103,88 +103,182 @@ export const mockDuplicatePairs: DuplicatePair[] = [
 export const mockDocuments: Document[] = [
   {
     id: 1,
-    title: "Effects of Ocrelizumab Combined with Exercise Therapy on Advanced Multiple Sclerosis",
-    abstract: "This study investigates the impact of combining ocrelizumab with exercise therapy on various markers of disease progression and overall quality of life in patients with advanced multiple sclerosis. The research involved 100 participants who underwent a 12-week exercise program alongside standard ocrelizumab treatment, with regular assessments of disability progression, brain atrophy, and quality of life measures.",
-    date: "2023-05-15",
-    authors: ["Smith, J.", "Johnson, A.", "Williams, R."],
+    title: "Ocrelizumab and Other CD20+ B-Cell-Depleting Therapies in Multiple Sclerosis",
+    abstract: "Selective depletion of CD20+ B cells by anti-CD20 monoclonal antibodies as monotherapy in multiple sclerosis (MS) profoundly suppresses acute inflammatory disease activity and signifies an important advance in the treatment of relapsing-remitting MS. Ocrelizumab, a humanized anti-CD20 monoclonal antibody, is also the first proven therapy to lessen disability progression in primary progressive MS-a breakthrough for patients with a disease that had no proven therapy. Ocrelizumab is generally well tolerated, with the most common adverse events experienced being infusion reactions and infections. In ocrelizumab trials in MS a numerical imbalance in the risk of malignancies was observed. In this article, we review advances in anti-CD20 B-cell-depleting biological therapies for MS, including ocrelizumab, rituximab, and ofatumumab.",
+    date: "2017-10-01",
+    authors: ["Jeffrey, M.", "Bruce, A.", "Stephen, M."],
     selected: false,
     abstractExpanded: false,
-    studyType: 'rct',
+    studyType: 'RCT',
     pico: {
       population: "Patients with advanced multiple sclerosis",
       intervention: "Ocrelizumab combined with exercise therapy",
       comparator: "Standard ocrelizumab treatment alone",
       outcome: "Disease progression and quality of life",
       expanded: false
-    }
+    },
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/28695471/"
   },
   {
     id: 2,
-    title: "Efficacy of Ocrelizumab in Reducing Relapses in Relapsing-Remitting Multiple Sclerosis",
-    abstract: "This meta-analysis examines the effectiveness of ocrelizumab in reducing relapse rates in patients with relapsing-remitting multiple sclerosis. The study synthesizes data from 20 randomized controlled trials, involving a total of 1,500 participants diagnosed with RRMS, comparing ocrelizumab to placebo and other disease-modifying therapies.",
+    title: "The importance of considering differences in study and patient characteristics before undertaking indirect treatment comparisons: a case study of siponimod for secondary progressive multiple sclerosis",
+    abstract: "Background: Indirect treatment comparisons (ITCs) provide valuable evidence on comparative efficacy where head-to-head clinical trials do not exist; however, differences in patient populations may introduce bias. Therefore, it is essential to assess between-trial heterogeneity to determine the suitability of synthesizing ITC results. We provide an illustrative case study in multiple sclerosis (MS) where we assess the feasibility of conducting ITCs between siponimod and interferon beta-1b (IFN β-1b) and between siponimod and ocrelizumab.\n Methods: We assessed the feasibility of conducting ITCs using standard unadjusted methods (e.g. Bucher or network meta-analysis [NMA]) as well as matching-adjusted indirect comparisons (MAICs) using individual patient data (IPD) from the siponimod (EXPAND) trial, based on guidance from NICE. Time to confirmed disability progression (CDP) at 3 or 6 months was assessed.Results: Bucher ITCs and NMAs, which rely on summary-level data, were not able to account for important cross-trial differences. Comparisons between siponimod and IFN β-1b were feasible using MAIC; the HRs (95% CI) for CDP-6 and CDP-3 were 0.55 (0.33-0.91) and 0.82 (0.42-1.63), respectively. ITCs were not feasible between siponimod and ocrelizumab because study designs and patient populations were too dissimilar to conduct a reliable ITC.Conclusions: This study highlights the importance of conducting a detailed feasibility assessment before undertaking ITCs to illuminate when excessive between-trial heterogeneity would cause biased results. MAIC was performed for siponimod and IFN β-1b in the absence of a head-to-head trial and was considered a more valid approach than a traditional ITC to examine comparative effectiveness.",
     date: "2023-04-02",
     authors: ["Brown, E.", "Davis, M."],
     selected: false,
     abstractExpanded: false,
-    studyType: 'meta-analysis',
+    studyType: 'Meta-analysis',
     pico: {
       population: "Individuals with relapsing-remitting multiple sclerosis",
       intervention: "Ocrelizumab",
       comparator: "Placebo or other disease-modifying therapies",
       outcome: "Relapse rates and disease progression",
       expanded: false
-    }
+    },
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/32216597/"
   },
   {
     id: 3,
     title: "The Impact of Ocrelizumab on Brain Atrophy in Primary Progressive Multiple Sclerosis",
-    abstract: "This randomized controlled trial investigates the effects of ocrelizumab on brain atrophy rates in primary progressive multiple sclerosis. The study included 150 adults with PPMS who were assigned to either an ocrelizumab treatment group or a placebo control group for 96 weeks. Outcomes measured included changes in brain volume, disability progression, and cognitive function. Participants in the ocrelizumab group received intravenous infusions every 24 weeks, while the control group received placebo infusions. Both groups underwent regular MRI scans, clinical assessments, and cognitive testing. Results showed that the ocrelizumab group experienced significantly lower rates of brain atrophy (mean reduction of 0.9% vs 1.3% in the placebo group) over the study period. Disability progression, as measured by the Expanded Disability Status Scale (EDSS), was also slower in the ocrelizumab group. Cognitive function, particularly in areas of processing speed and memory, showed relative preservation in the ocrelizumab group compared to the placebo group. Additionally, ocrelizumab was associated with a reduction in new or enlarging T2 lesions on MRI. The safety profile was consistent with previous studies, with infusion-related reactions being the most common adverse event. These findings suggest that ocrelizumab can effectively slow brain atrophy and disability progression in patients with primary progressive multiple sclerosis, potentially offering a valuable treatment option for this challenging form of the disease.",
+    abstract: "This randomized controlled trial investigates the effects of ocrelizumab on brain atrophy rates in primary progressive multiple sclerosis. The study included 150 adults with PPMS who were assigned to either an ocrelizumab treatment group or a placebo control group for 96 weeks. Outcomes measured included changes in brain volume, disability progression, and cognitive function.",
     date: "2023-06-10",
     authors: ["Wilson, T.", "Taylor, M.", "Anderson, K."],
     selected: false,
     abstractExpanded: false,
-    studyType: 'rct',
+    studyType: 'RCT',
     pico: {
       population: "Adults with primary progressive multiple sclerosis",
       intervention: "Ocrelizumab",
       comparator: "Placebo",
       outcome: "Brain atrophy rates and disability progression",
       expanded: false
-    }
+    },
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
   },
   {
     id: 4,
     title: "Long-Term Safety and Efficacy of Ocrelizumab in Multiple Sclerosis: A 5-Year Follow-Up Study",
-    abstract: "This long-term follow-up study evaluates the safety and efficacy of ocrelizumab in patients with multiple sclerosis over a 5-year period. The study includes data from 2,500 patients with relapsing-remitting and primary progressive MS who participated in the initial phase III trials and continued treatment in the open-label extension phase. The primary outcomes assessed were long-term safety profile, annualized relapse rate, and disability progression. Secondary outcomes included MRI activity, patient-reported outcomes, and work productivity. Safety data were collected through adverse event reporting and regular laboratory assessments. Efficacy was measured using the Expanded Disability Status Scale (EDSS), the Multiple Sclerosis Functional Composite (MSFC), and brain MRI scans. Results indicated that the safety profile of ocrelizumab remained consistent with the initial trials, with no new safety signals emerging over the 5-year period. The most common adverse events were infusion-related reactions and upper respiratory tract infections. The annualized relapse rate remained low throughout the study period, with a mean of 0.14 relapses per year. Disability progression was significantly slowed, with 76% of patients showing no confirmed disability progression at 5 years. MRI data showed sustained reduction in new or enlarging T2 lesions and gadolinium-enhancing lesions. Patient-reported outcomes demonstrated improvements or stability in quality of life measures and reduced fatigue. Work productivity assessments showed that a higher proportion of patients maintained employment compared to natural history data of untreated MS populations. Subgroup analyses revealed that the benefits were observed across different patient demographics and disease characteristics. While this study provides valuable long-term data, limitations include the open-label design and potential bias due to the selection of patients who continued treatment. Nevertheless, these findings support the long-term use of ocrelizumab in multiple sclerosis, demonstrating sustained efficacy and a manageable safety profile over an extended treatment period.",
+    abstract: "This long-term follow-up study evaluates the safety and efficacy of ocrelizumab in patients with multiple sclerosis over a 5-year period. The study includes data from 2,500 patients with relapsing-remitting and primary progressive MS who participated in the initial phase III trials and continued treatment in the open-label extension phase.",
     date: "2023-03-22",
     authors: ["Thomas, R.", "Moore, J.", "Jackson, L."],
     selected: false,
     abstractExpanded: false,
-    studyType: 'observational',
+    studyType: 'Cohort study',
     pico: {
       population: "Patients with relapsing-remitting and primary progressive multiple sclerosis",
       intervention: "Long-term ocrelizumab treatment",
       comparator: "Historical data and initial trial results",
       outcome: "Long-term safety profile and efficacy measures",
       expanded: false
-    }
+    },
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
   },
   {
     id: 5,
     title: "Ocrelizumab's Effect on Fatigue and Cognitive Function in Multiple Sclerosis",
-    abstract: "This observational study investigates the impact of ocrelizumab on fatigue levels and cognitive function in patients with multiple sclerosis. The research involved 200 MS patients treated with ocrelizumab and 200 matched controls receiving other disease-modifying therapies, analyzing changes in fatigue scores and cognitive performance over a 2-year period. Participants were recruited from multiple MS clinics across the country. Fatigue was assessed using the Modified Fatigue Impact Scale (MFIS) and the Fatigue Severity Scale (FSS). Cognitive function was evaluated using a comprehensive neuropsychological battery, including tests of processing speed, attention, memory, and executive function. Assessments were conducted at baseline, 12 months, and 24 months. The study found significant improvements in fatigue scores in the ocrelizumab group compared to the control group, with a mean reduction of 30% in MFIS scores at 24 months. Cognitive function showed a more mixed picture, with significant improvements in processing speed and attention, but more modest effects on memory and executive function. Notably, patients with higher baseline fatigue levels showed the greatest improvements in both fatigue and cognitive measures. MRI data, collected on a subset of participants, showed correlations between reductions in T2 lesion load and improvements in fatigue and cognitive scores in the ocrelizumab group. The study also explored potential mechanisms, suggesting that the reduction in CNS inflammation and preservation of brain volume associated with ocrelizumab treatment may contribute to these improvements. Quality of life measures, including work productivity and social engagement, showed corresponding improvements in the ocrelizumab group. While this observational study cannot establish causality, it provides compelling evidence for the positive effects of ocrelizumab on fatigue and aspects of cognitive function in MS patients, suggesting potential benefits beyond its known effects on relapse rates and disability progression.",
+    abstract: "This observational study investigates the impact of ocrelizumab on fatigue levels and cognitive function in patients with multiple sclerosis. The research involved 200 MS patients treated with ocrelizumab and 200 matched controls receiving other disease-modifying therapies, analyzing changes in fatigue scores and cognitive performance over a 2-year period.",
     date: "2023-07-05",
     authors: ["White, H.", "Harris, P.", "Clark, S."],
     selected: false,
     abstractExpanded: false,
-    studyType: 'observational',
+    studyType: 'Case-control study',
     pico: {
       population: "Patients with multiple sclerosis",
       intervention: "Ocrelizumab treatment",
       comparator: "Other disease-modifying therapies",
       outcome: "Changes in fatigue levels and cognitive function",
       expanded: false
-    }
+    },
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+  },
+  {
+    id: 6,
+    title: "Ocrelizumab in Pediatric Multiple Sclerosis: A Pilot Study",
+    abstract: "This pilot study investigates the safety and efficacy of ocrelizumab in pediatric patients with multiple sclerosis. The study included 30 patients aged 10-17 with relapsing-remitting MS, who received weight-based dosing of ocrelizumab over 24 weeks. Primary outcomes included safety profile and changes in relapse rate.",
+    date: "2023-08-20",
+    authors: ["Rodriguez, C.", "Lee, S.", "Patel, A."],
+    selected: false,
+    abstractExpanded: false,
+    studyType: 'Case series',
+    pico: {
+      population: "Pediatric patients with relapsing-remitting multiple sclerosis",
+      intervention: "Weight-based ocrelizumab treatment",
+      comparator: "Historical controls",
+      outcome: "Safety profile and relapse rate",
+      expanded: false
+    },
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+  },
+  {
+    id: 7,
+    title: "Ocrelizumab and Pregnancy Outcomes in Multiple Sclerosis: A Retrospective Analysis",
+    abstract: "This retrospective study examines pregnancy outcomes in women with multiple sclerosis who were exposed to ocrelizumab before or during pregnancy. The study analyzed data from 150 pregnancies in women who received ocrelizumab within 6 months prior to conception or during pregnancy.",
+    date: "2023-09-05",
+    authors: ["Garcia, M.", "Thompson, R.", "Chen, L."],
+    selected: false,
+    abstractExpanded: false,
+    studyType: 'Cohort study',
+    pico: {
+      population: "Pregnant women with multiple sclerosis exposed to ocrelizumab",
+      intervention: "Ocrelizumab exposure",
+      comparator: "General MS population pregnancy outcomes",
+      outcome: "Pregnancy and fetal outcomes, postpartum disease activity",
+      expanded: false
+    },
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+  },
+  {
+    id: 8,
+    title: "Comparative Effectiveness of Ocrelizumab vs Natalizumab in Highly Active Relapsing Multiple Sclerosis",
+    abstract: "This head-to-head study compares the effectiveness of ocrelizumab and natalizumab in patients with highly active relapsing multiple sclerosis. The study included 300 patients randomized to receive either ocrelizumab or natalizumab over 2 years.",
+    date: "2023-10-12",
+    authors: ["Kim, J.", "Novak, I.", "Fernandez, O."],
+    selected: false,
+    abstractExpanded: false,
+    studyType: 'RCT',
+    pico: {
+      population: "Patients with highly active relapsing multiple sclerosis",
+      intervention: "Ocrelizumab",
+      comparator: "Natalizumab",
+      outcome: "Relapse rate and disability progression",
+      expanded: false
+    },
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+  },
+  {
+    id: 9,
+    title: "Long-term Effects of Ocrelizumab on Disability in Primary Progressive Multiple Sclerosis",
+    abstract: "This extension study evaluates the long-term effects of ocrelizumab on disability progression in patients with primary progressive multiple sclerosis. The study followed 500 patients from the original phase III trial for an additional 5 years.",
+    date: "2023-11-18",
+    authors: ["Smith, A.", "Jones, B.", "Williams, C."],
+    selected: false,
+    abstractExpanded: false,
+    studyType: 'Cohort study',
+    pico: {
+      population: "Patients with primary progressive multiple sclerosis",
+      intervention: "Long-term ocrelizumab treatment",
+      comparator: "Historical data from untreated PPMS cohorts",
+      outcome: "Time to confirmed disability progression",
+      expanded: false
+    },
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+  },
+  {
+    id: 10,
+    title: "Ocrelizumab and Risk of Infections: A Comprehensive Safety Analysis",
+    abstract: "This comprehensive safety analysis focuses on the risk of infections associated with ocrelizumab treatment in multiple sclerosis. The study pooled data from clinical trials and post-marketing surveillance, including over 5000 patients treated with ocrelizumab.",
+    date: "2023-12-01",
+    authors: ["Brown, E.", "Miller, F.", "Davis, G."],
+    selected: false,
+    abstractExpanded: false,
+    studyType: 'Meta-analysis',
+    pico: {
+      population: "Multiple sclerosis patients treated with ocrelizumab",
+      intervention: "Ocrelizumab treatment",
+      comparator: "Other MS treatments and general population",
+      outcome: "Incidence and types of infections",
+      expanded: false
+    },
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
   }
 ];
-
