@@ -394,7 +394,9 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                 </div>
                 <div className="p-4 flex">
                   <div className="w-1/2 pr-4">
-                    <p className="text-gray-600 mb-2">{query.description}</p>
+                    <h4 className="font-semibold text-teal-700 mb-2">Description:</h4>
+                    <p className="text-gray-600 mb-4">{query.description}</p>
+                    <h4 className="font-semibold text-teal-700 mb-2">PubMed Query:</h4>
                     <div className="bg-gray-100 p-3 rounded-md text-sm text-gray-700 overflow-x-auto mb-3">
                       <code className="whitespace-pre-wrap">{query.pubmedQuery}</code>
                     </div>

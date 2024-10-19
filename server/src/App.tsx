@@ -4,6 +4,7 @@ import QueryGenerator from './components/QueryGenerator';
 import DocumentAnalysis from './components/DocumentAnalysis';
 import FilteringDiagram from './components/FilteringDiagram';
 import DuplicateAnalysis from './components/DuplicateAnalysis';
+import logo from './utils/Image1.png';
 
 // Add these type definitions
 export interface SavedQuery {
@@ -89,10 +90,13 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-teal-600 shadow-md">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center">
-          <FaHeartbeat className="text-white text-3xl mr-4" />
-          <h1 className="text-2xl font-semibold text-white">Systematic Literature Review Assistant</h1>
-        </div>
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          <div className="flex items-center">
+            <FaHeartbeat className="text-white text-3xl mr-4" />
+            <h1 className="text-2xl font-semibold text-white">Systematic Literature Review Assistant</h1>
+            </div>
+            <img src={logo} alt="Logo" className="h-12 w-auto" />
+            </div>
       </header>
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
