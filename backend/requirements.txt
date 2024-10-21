@@ -5,3 +5,5 @@ mistralai
 plotly
 kaleido
 python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]

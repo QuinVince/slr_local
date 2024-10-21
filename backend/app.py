@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -9,6 +9,9 @@ import logging
 import os
 from dotenv import load_dotenv
 from prisma_generator import generate_prisma_diagram
+from fastapi.security import OAuth2PasswordRequestForm
+from datetime import timedelta
+from auth import authenticate_user, create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM
 
 # Load environment variables from .env file
 load_dotenv()
@@ -52,11 +55,28 @@ class PrismaData(BaseModel):
     postDeduplication: int
     hundredPercentMatch: int
 
+# Token endpoint for authentication
+
+@app.post("/token")
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
 # Keep only the necessary endpoints (generate_questions, generate_pubmed_query, generate_synonyms, export_prisma)
 # Remove all project-related endpoints
 
 @app.post("/generate_questions")
-async def generate_questions(request: Request):
+async def generate_questions(request: Request, current_user: str = Depends(get_current_user)):
     try:
         body = await request.json()
         logger.info(f"Received request body: {body}")
@@ -84,7 +104,7 @@ async def generate_questions(request: Request):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/generate_pubmed_query")
-async def generate_pubmed_query(request: PubMedQueryRequest):
+async def generate_pubmed_query(request: PubMedQueryRequest, current_user: str = Depends(get_current_user)):
     logger.info(f"Received PubMed query request: {request}")
     try:
         logger.info("Running generate_pubmed_query.py")
@@ -98,7 +118,7 @@ async def generate_pubmed_query(request: PubMedQueryRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/generate_synonyms")
-async def generate_synonyms(request: SynonymRequest):
+async def generate_synonyms(request: SynonymRequest, current_user: str = Depends(get_current_user)):
     logger.info(f"Received synonym request: {request}")
     try:
         script_path = os.path.join(os.path.dirname(__file__), 'generate_synonyms.py')
@@ -133,7 +153,7 @@ async def test_synonyms():
     return {"message": "Synonym route is working"}
 
 @app.post("/export_prisma")
-async def export_prisma(data: PrismaData):
+async def export_prisma(data: PrismaData, current_user: str = Depends(get_current_user)):
     logger.debug("export_prisma endpoint called with data")
     try:
         logger.debug("Generating PRISMA diagram...")
