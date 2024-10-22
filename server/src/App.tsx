@@ -4,7 +4,9 @@ import QueryGenerator from './components/QueryGenerator';
 import DocumentAnalysis from './components/DocumentAnalysis';
 import FilteringDiagram from './components/FilteringDiagram';
 import DuplicateAnalysis from './components/DuplicateAnalysis';
-import logo from './utils/Image1.png';
+import Login from './components/Login';
+import axios from 'axios';
+import logo from './utils/Image1.png'; // Add this line
 
 // Add these type definitions
 export interface SavedQuery {
@@ -55,6 +57,8 @@ export interface AnalysisData {
 }
 
 const App: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState('');
   const [activeTab, setActiveTab] = useState('query');
   const [savedQueries, setSavedQueries] = useState<SavedQuery[]>([]);
   const [analysisData, setAnalysisData] = useState<AnalysisData>({
@@ -88,16 +92,71 @@ const App: React.FC = () => {
     setAnalysisData(prevData => ({ ...prevData, ...newData }));
   };
 
+  // ****** authentication********
+
+ // useEffect(() => {
+ //   const storedToken = localStorage.getItem('token');
+ //   if (storedToken) {
+ //     setToken(storedToken);
+ //     setIsLoggedIn(true);
+ //   }
+ // }, []);
+
+// authentication
+//   // Login function
+//   const handleLogin = async (username: string, password: string) => {
+//     try {
+//       const response = await axios.post('http://localhost:8000/token', {
+//         username,
+//         password,
+//       }, {
+//         headers: {
+//           'Content-Type': 'application/x-www-form-urlencoded'
+//         }
+//       });
+//       const { access_token } = response.data;
+//       setToken(access_token);
+//       setIsLoggedIn(true);
+//       localStorage.setItem('token', access_token);
+//     } catch (error) {
+//       console.error('Login failed:', error);
+//       alert('Login failed. Please check your credentials.');
+//     }
+//   };
+
+//   const handleLogout = () => {
+//     setToken('');
+//     setIsLoggedIn(false);
+//     localStorage.removeItem('token');
+//   };
+
+//   // Update axios default headers
+//   useEffect(() => {
+//     if (token) {
+//       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+//     } else {
+//       delete axios.defaults.headers.common['Authorization'];
+//     }
+//   }, [token]);
+
+//   if (!isLoggedIn) {
+//     return <Login onLogin={handleLogin} />;
+//   }
+
+// ****** end of authentication********
+// Uses auth.py, jose, passlib, login.tsx
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="bg-teal-600 shadow-md">
+      <header className="shadow-md" style={{
+        background: 'linear-gradient(115deg, white 0%, #d0f5e6 75%, #ffd6a5 85%, #F05251 100%)'
+      }}>
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center">
-            <FaHeartbeat className="text-white text-3xl mr-4" />
-            <h1 className="text-2xl font-semibold text-white">Systematic Literature Review Assistant</h1>
-            </div>
-            <img src={logo} alt="Logo" className="h-12 w-auto" />
-            </div>
+            <FaHeartbeat className="text-teal-700 text-3xl mr-4" />
+            <h1 className="text-2xl font-semibold text-teal-700">Systematic Literature Review Assistant</h1>
+          </div>
+          <img src={logo} alt="Logo" className="h-12 w-auto" />
+        </div>
       </header>
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
