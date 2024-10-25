@@ -53,12 +53,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
   const handleNavigation = (component: string) => {
     setActiveComponent(component);
     if (component === 'query') {
-      setShowQueryGenerator(false); // Reset to show description input
-      setShowComponent(false);
-    } else {
       setShowQueryGenerator(false);
-      setShowComponent(false); // Reset component visibility
-      setSelectedQueryId(''); // Reset selected query
+    } else {
+      // For other components, directly show them
+      setShowComponent(true);
     }
   };
 
@@ -79,17 +77,23 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
       );
     }
 
-    if (activeComponent !== 'query' && !showComponent) {
-      return null;
-    }
-
     switch (activeComponent) {
       case 'duplicate':
-        return showComponent && <DuplicateAnalysis savedQueries={savedQueries} />;
+        return showComponent && (
+          <DuplicateAnalysis savedQueries={savedQueries} />
+        );
       case 'document':
-        return showComponent && <DocumentAnalysis analysisData={analysisData} updateAnalysisData={updateAnalysisData} savedQueries={savedQueries} />;
+        return showComponent && (
+          <DocumentAnalysis 
+            analysisData={analysisData}
+            updateAnalysisData={updateAnalysisData}
+            savedQueries={savedQueries}
+          />
+        );
       case 'diagram':
-        return showComponent && <FilteringDiagram />;
+        return showComponent && (
+          <FilteringDiagram initialData={analysisData} />
+        );
       default:
         return null;
     }
@@ -102,73 +106,33 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
     }
   };
 
-  const renderQuerySelector = () => {
-    if (activeComponent === 'query') {
-      return (
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-xl font-semibold text-teal-700 mb-4">Describe your research</h2>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="w-full px-4 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-            rows={1}
-            placeholder="Décrivez votre recherche en langage naturel"
-          />
-          <div className="flex justify-end">
-            <button
-              onClick={handleDescriptionSubmit}
-              className="mt-4 px-6 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-            >
-              →
-            </button>
-          </div>
-        </div>
-      );
-    } else if (savedQueries.length > 0) {
-      return (
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-xl font-semibold text-teal-700 mb-4">Select a Query</h2>
-          <div className="flex items-center space-x-4">
-            <select
-              value={selectedQueryId}
-              onChange={(e) => handleQuerySelect(e.target.value)}
-              className="flex-1 px-3 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-            >
-              <option value="">Select a query</option>
-              {savedQueries.map(query => (
-                <option key={query.id} value={query.id}>
-                  {query.name}
-                </option>
-              ))}
-            </select>
-            {selectedQueryId && (
-              <button
-                onClick={() => setShowComponent(true)}
-                className="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600"
-              >
-                →
-              </button>
-            )}
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <p className="text-center text-gray-600">No saved queries available. Create a new query first.</p>
-        </div>
-      );
-    }
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
       {!showQueryGenerator && !showComponent && (
         <>
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-teal-700 mb-6">Que souhaitez-vous faire ?</h1>
-            {renderQuerySelector()}
+            {activeComponent === 'query' && (
+              <div className="bg-white shadow-md rounded-lg p-6">
+                <h2 className="text-xl font-semibold text-teal-700 mb-4">Describe your research</h2>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="w-full px-4 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  rows={1}
+                  placeholder="Décrivez votre recherche en langage naturel"
+                />
+                <div className="flex justify-end">
+                  <button
+                    onClick={handleDescriptionSubmit}
+                    className="mt-4 px-6 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex space-x-4 mb-8">
