@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { SavedQuery, AnalysisData } from '../App'; // Import SavedQuery from App.tsx
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend} from 'chart.js';
 import { mockDocuments } from '../mockData';
+import CriteriaExample from './CriteriaExample';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -102,6 +103,13 @@ const YearTag: React.FC<{ date: string }> = ({ date }) => {
   );
 };
 
+const CRITERIA_EXAMPLES = [
+  "Select only RCTs, SLRs, meta-analysis",
+  "Select papers that consider the use of Ocrelizumab to treat multiple sclerosis",
+  "Select papers that mention side effects or adverse events",
+  "Select papers with a minimum sample size of 100 patients"
+];
+
 const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updateAnalysisData, savedQueries }) => {
   const [newCriterion, setNewCriterion] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -118,6 +126,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
   const [analysisCompleted, setAnalysisCompleted] = useState(false);
   const [activeTooltip, setActiveTooltip] = useState<{ docId: number; criterionId: number } | null>(null);
   const [showOnlyFullMatch, setShowOnlyFullMatch] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(true);
 
   useEffect(() => {
     if (selectedQuery && selectedQuery !== analysisData.selectedQuery) {
@@ -314,17 +323,12 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
-      <h3 className="text-2xl font-bold mb-6 text-teal-700">
-        <FaFileAlt className="mr-2 inline-block" /> Document Analysis
-      </h3>
-      <div className="mb-6">
-        <label htmlFor="querySelect" className="block text-sm font-medium text-gray-700 mb-2">
-          Select a Query
-        </label>
+    <div className="flex h-full">
+      {/* Left Panel */}
+      <div className="w-1/3 p-6 border-r border-gray-200">
+        {/* Query Selector */}
         <select
-          id="querySelect"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 mb-6"
           onChange={handleQueryChange}
           value={analysisData.selectedQuery?.id || ''}
         >
@@ -335,317 +339,288 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
             </option>
           ))}
         </select>
-      </div>
 
-      <div className="flex space-x-4">
-        {/* Criteria definition box */}
-        <div className="w-1/2">
-          <h2 className="text-xl font-semibold mb-4 text-teal-700">Criteria definition</h2>
-          <div className="mb-4">
-            <input
-              type="text"
-              value={newCriterion}
-              onChange={(e) => setNewCriterion(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              placeholder="Enter new criterion"
-            />
-            <button
-              onClick={handleAddCriterion}
-              className="mt-2 bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 transition-colors duration-200 flex items-center"
-            >
-              <FaPlus className="mr-2" /> Add Criterion
-            </button>
-          </div>
-          <div className="mb-4">
-            <select
-              value={selectedPresetCriteria}
-              onChange={handlePresetCriteriaChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-            >
-              <option value="">Criteria examples</option>
-              <option value="Select only RCTs, SLRs, meta-analysis">Select only RCTs, SLRs, meta-analysis</option>
-              <option value="Select papers that consider the use of Ocrelizumab to treat multiple sclerosis">Select papers that consider the use of Ocrelizumab to treat multiple sclerosis</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Newly created criteria list */}
-        <div className="w-1/2">
-          <h2 className="text-xl font-semibold mb-4 text-teal-700">Created Criteria</h2>
-          <div>
-            {analysisData.criteria.map((criterion) => (
-              <div key={criterion.id} className="flex items-center justify-between bg-gray-100 p-2 rounded-md mb-2">
-                <span className="text-sm font-medium text-teal-700">Criteria {criterion.id}: {criterion.description}</span>
-                <button
-                  onClick={() => handleRemoveCriterion(criterion.id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <FaTrash />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {analysisData.selectedQuery && (
-        <>
-          <div className="mb-4 mt-8">
-            <button
-              onClick={handleAnalyzeDocuments}
-              disabled={isAnalyzing || analysisData.criteria.length === 0 || analysisData.documents.filter(d => d.selected).length === 0}
-              className="w-full bg-teal-500 text-white p-2 rounded-md hover:bg-teal-600 disabled:bg-gray-300 flex items-center justify-center"
-            >
-              <FaMagic className="mr-2" />
-              {isAnalyzing ? 'Analyzing...' : 'Analyze Documents with AI'}
-            </button>
-
-            {isAnalyzing && (
-              <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                <div className="bg-teal-600 h-2.5 rounded-full" style={{width: '45%'}}></div>
-              </div>
-            )}
-          </div>
-          {/* Analysis Results Section - only shown after analysis is completed */}
-          {analysisCompleted && (
-            <div className="mb-6 bg-teal-50 border border-teal-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-teal-700 mb-3 text-center">Analysis Results</h3>
-              {(() => {
-                const results = calculateAnalysisResults();
-                if (!results) return null;
-
-                return (
-                  <div className="flex justify-between items-center mb-4 relative">
-                    <div className="w-[35%] bg-white p-3 rounded-md shadow flex flex-col items-center">
-                      <p className="text-sm text-gray-600 text-center">Documents Analyzed</p>
-                      <p className="text-2xl font-bold text-teal-600 text-center">{results.deduplicatedPapers}</p>
-                    </div>
-                    <div className="w-[30%] flex flex-col justify-center items-center">
-                      <div className="bg-white p-2 rounded-full border border-teal-500 relative group mb-2">
-                        <FaArrowRight className="text-xl text-teal-500" />
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-                          {results.reductionPercentage}% removed
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-600 text-center">
-                        {results.reductionPercentage}% less abstracts to read
-                      </p>
-                    </div>
-                    <div className="w-[35%] bg-white p-3 rounded-md shadow flex flex-col items-center">
-                      <p className="text-sm text-gray-600 text-center">100% Criteria Matches</p>
-                      <p className="text-2xl font-bold text-green-600 text-center">
-                        {results.hundredPercentMatch}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-          )}
-
-          {/* Documents Section - shown as soon as a query is selected */}
-          <div className="mb-4 border p-4 rounded-md relative">
-            <h3 className="text-lg font-semibold text-teal-700 mb-2">Documents</h3>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center">
-                <label className="flex items-center mr-4">
-                  <input
-                    type="checkbox"
-                    checked={selectAll}
-                    onChange={handleSelectAll}
-                    className="mr-2"
-                  />
-                  <span className="text-sm">Select All</span>
-                </label>
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="bg-teal-500 text-white px-3 py-1 rounded-md hover:bg-teal-600 flex items-center text-sm mr-2"
-                >
-                  <FaFilter className="mr-2" />
-                  Filters
-                </button>
-                {analysisCompleted && (
-                  <button
-                    onClick={() => setShowOnlyFullMatch(!showOnlyFullMatch)}
-                    className={`px-3 py-1 rounded-md flex items-center text-sm ${
-                      showOnlyFullMatch ? 'bg-teal-600 text-white' : 'bg-white text-teal-600 border border-teal-600'
-                    }`}
-                  >
-                    <FaCheckDouble className="mr-2" />
-                    Show 100% match only
-                  </button>
-                )}
-              </div>
+        {/* Tooltip */}
+        {showTooltip && (
+          <div className="mb-6 bg-gray-50 p-4 rounded-md">
+            <div className="flex justify-between items-start mb-2">
+              <h3 className="font-semibold text-gray-700">Criteria definition:</h3>
               <button
-                onClick={handleExport}
-                className="bg-teal-500 text-white px-3 py-1 rounded-md hover:bg-teal-600 flex items-center text-sm"
+                onClick={() => setShowTooltip(false)}
+                className="text-teal-600 text-sm underline hover:text-teal-700"
               >
-                <FaDownload className="mr-2" />
-                Export
+                Hide
               </button>
             </div>
+            <p className="text-sm text-gray-600">
+              We encourage you to use natural language instead of keywords.
+              Example: "I want to select publications that mention one specific thing"
+              This allows the tool to provide more relevant results.
+            </p>
+          </div>
+        )}
 
-            {showFilters && (
-              <div className="absolute left-0 top-24 w-80 mb-4 p-4 bg-white rounded-md shadow-lg z-10 border border-gray-200">
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Keyword</label>
+        {/* Criteria Input */}
+        <div className="mb-6">
+          <input
+            type="text"
+            value={newCriterion}
+            onChange={(e) => setNewCriterion(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+            placeholder="Enter new criterion in natural language..."
+          />
+          <button
+            onClick={handleAddCriterion}
+            className="mt-2 w-full bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 transition-colors duration-200 flex items-center justify-center"
+          >
+            <FaPlus className="mr-2" /> Add Criterion
+          </button>
+        </div>
+
+        {/* Criteria Examples */}
+        <div className="space-y-2">
+          <h3 className="font-semibold text-gray-700 mb-3">Example criteria:</h3>
+          {CRITERIA_EXAMPLES.map((example, index) => (
+            <CriteriaExample
+              key={index}
+              example={example}
+              onSelect={(example) => {
+                setNewCriterion(example);
+                handleAddCriterion();
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Right Panel */}
+      <div className="w-2/3 p-6">
+        {/* Active Criteria */}
+        {analysisData.criteria.length > 0 && (
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-semibold text-gray-700">Active Criteria:</h3>
+              <button
+                onClick={handleAnalyzeDocuments}
+                disabled={isAnalyzing}
+                className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 disabled:bg-gray-300 flex items-center"
+              >
+                <FaMagic className="mr-2" />
+                {isAnalyzing ? 'Analyzing...' : 'Analyze Corpus'}
+              </button>
+            </div>
+            <div className="space-y-2">
+              {analysisData.criteria.map((criterion) => (
+                <div key={criterion.id} className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
+                  <span className="text-sm font-medium text-teal-700">
+                    Criteria {criterion.id}: {criterion.description}
+                  </span>
+                  <button
+                    onClick={() => handleRemoveCriterion(criterion.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Filters and Export */}
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="bg-teal-500 text-white px-3 py-1 rounded-md hover:bg-teal-600 flex items-center"
+            >
+              <FaFilter className="mr-2" />
+              Filters
+            </button>
+            {analysisCompleted && (
+              <button
+                onClick={() => setShowOnlyFullMatch(!showOnlyFullMatch)}
+                className={`px-3 py-1 rounded-md flex items-center ${
+                  showOnlyFullMatch ? 'bg-teal-600 text-white' : 'bg-white text-teal-600 border border-teal-600'
+                }`}
+              >
+                <FaCheckDouble className="mr-2" />
+                Show 100% match only
+              </button>
+            )}
+          </div>
+          <button
+            onClick={handleExport}
+            className="bg-teal-500 text-white px-3 py-1 rounded-md hover:bg-teal-600 flex items-center"
+          >
+            <FaDownload className="mr-2" />
+            Export
+          </button>
+        </div>
+
+        {/* Filters Popup */}
+        {showFilters && (
+          <div className="mb-4 p-4 bg-white rounded-md shadow-lg border border-gray-200">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Keyword</label>
+              <input
+                type="text"
+                value={filterKeyword}
+                onChange={(e) => setFilterKeyword(e.target.value)}
+                className="p-2 border border-gray-300 rounded-md w-full"
+                placeholder="Search keyword"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+              <div className="px-2">
+                <StyledSlider
+                  value={dateRange}
+                  onChange={(newValues: number | readonly number[], index: number) => handleDateRangeChange(newValues as number[])}
+                  min={new Date('2023-01-01').getTime()}
+                  max={new Date().getTime()}
+                  renderTrack={Track}
+                  renderThumb={Thumb}
+                />
+              </div>
+              <div className="flex justify-between mt-2 text-xs text-gray-500">
+                <span>{formatDate(dateRange[0])}</span>
+                <span>{formatDate(dateRange[1])}</span>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Study Type</label>
+              <select
+                value={studyType}
+                onChange={(e) => setStudyType(e.target.value)}
+                className="p-2 border border-gray-300 rounded-md w-full"
+              >
+                <option value="all">All Types</option>
+                <option value="rct">Randomized Controlled Trial</option>
+                <option value="observational">Observational Study</option>
+                <option value="meta-analysis">Meta-Analysis</option>
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Documents List */}
+        <div className="overflow-y-auto max-h-[calc(100vh-300px)]">
+          {filteredDocuments.map(doc => (
+            <div key={doc.id} className="border p-4 mb-4 rounded-md">
+              <div className="flex">
+                <div className="w-1/12 flex items-start justify-center pt-1">
                   <input
-                    type="text"
-                    value={filterKeyword}
-                    onChange={(e) => setFilterKeyword(e.target.value)}
-                    className="p-2 border border-gray-300 rounded-md w-full"
-                    placeholder="Search keyword"
+                    type="checkbox"
+                    checked={doc.selected}
+                    onChange={() => handleDocumentSelect(doc.id)}
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
-                  <div className="px-2">
-                    <StyledSlider
-                      value={dateRange}
-                      onChange={(newValues: number | readonly number[], index: number) => handleDateRangeChange(newValues as number[])}
-                      min={new Date('2023-01-01').getTime()}
-                      max={new Date().getTime()}
-                      renderTrack={Track}
-                      renderThumb={Thumb}
-                    />
+                <div className="w-8/12 pr-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 
+                      className="font-semibold cursor-pointer hover:text-teal-500 transition-colors duration-200"
+                      onClick={() => togglePICO(doc.id)}
+                    >
+                      {doc.title}
+                    </h4>
                   </div>
-                  <div className="flex justify-between mt-2 text-xs text-gray-500">
-                    <span>{formatDate(dateRange[0])}</span>
-                    <span>{formatDate(dateRange[1])}</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Study Type</label>
-                  <select
-                    value={studyType}
-                    onChange={(e) => setStudyType(e.target.value)}
-                    className="p-2 border border-gray-300 rounded-md w-full"
-                  >
-                    <option value="all">All Types</option>
-                    <option value="rct">Randomized Controlled Trial</option>
-                    <option value="observational">Observational Study</option>
-                    <option value="meta-analysis">Meta-Analysis</option>
-                  </select>
-                </div>
-              </div>
-            )}
-
-            {filteredDocuments.map(doc => (
-              <div key={doc.id} className="border p-4 mb-4 rounded-md">
-                <div className="flex">
-                  <div className="w-1/12 flex items-start justify-center pt-1">
-                    <input
-                      type="checkbox"
-                      checked={doc.selected}
-                      onChange={() => handleDocumentSelect(doc.id)}
-                    />
-                  </div>
-                  <div className="w-8/12 pr-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 
-                        className="font-semibold cursor-pointer hover:text-teal-500 transition-colors duration-200"
-                        onClick={() => togglePICO(doc.id)}
+                  
+                  <div className="text-sm mb-2">
+                    <p>
+                      {doc.abstractExpanded 
+                        ? doc.abstract 
+                        : `${doc.abstract.slice(0, 80).trim()}${doc.abstract.length > 80 ? '...' : ''}`}
+                    </p>
+                    {doc.abstract.length > 80 && (
+                      <button 
+                        className="text-teal-500 cursor-pointer mt-2"
+                        onClick={() => toggleAbstract(doc.id)}
                       >
-                        {doc.title}
-                      </h4>
-                    </div>
-                    
-                    <div className="text-sm mb-2">
-                      <p>
-                        {doc.abstractExpanded 
-                          ? doc.abstract 
-                          : `${doc.abstract.slice(0, 80).trim()}${doc.abstract.length > 80 ? '...' : ''}`}
-                      </p>
-                      {doc.abstract.length > 80 && (
-                        <button 
-                          className="text-teal-500 cursor-pointer mt-2"
-                          onClick={() => toggleAbstract(doc.id)}
-                        >
-                          {doc.abstractExpanded ? 'Show less' : 'Read more'}
-                        </button>
-                      )}
-                    </div>
-                    
-                    {doc.pico.expanded && (
-                      <div className="mt-2 bg-gray-100 p-3 rounded">
-                        <h5 className="font-semibold mb-2">PICO Information</h5>
-                        <ul className="list-disc pl-5">
-                          <li><strong>Population:</strong> {doc.pico.population}</li>
-                          <li><strong>Intervention:</strong> {doc.pico.intervention}</li>
-                          <li><strong>Comparator:</strong> {doc.pico.comparator}</li>
-                          <li><strong>Outcome:</strong> {doc.pico.outcome}</li>
-                        </ul>
-                      </div>
+                        {doc.abstractExpanded ? 'Show less' : 'Read more'}
+                      </button>
                     )}
-                    
-                    <div className="flex items-center mt-2 text-xs text-gray-500">
-                      <YearTag date={doc.date} />
-                      <StudyTypeTag type={doc.studyType} />
-                      <AuthorsTag authors={doc.authors} />
-                      <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                        <FaQuoteLeft className="mr-1" />
-                        {doc.citationCount} citations
-                      </span>
-                    </div>
                   </div>
+                  
+                  {doc.pico.expanded && (
+                    <div className="mt-2 bg-gray-100 p-3 rounded">
+                      <h5 className="font-semibold mb-2">PICO Information</h5>
+                      <ul className="list-disc pl-5">
+                        <li><strong>Population:</strong> {doc.pico.population}</li>
+                        <li><strong>Intervention:</strong> {doc.pico.intervention}</li>
+                        <li><strong>Comparator:</strong> {doc.pico.comparator}</li>
+                        <li><strong>Outcome:</strong> {doc.pico.outcome}</li>
+                      </ul>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center mt-2 text-xs text-gray-500">
+                    <YearTag date={doc.date} />
+                    <StudyTypeTag type={doc.studyType} />
+                    <AuthorsTag authors={doc.authors} />
+                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                      <FaQuoteLeft className="mr-1" />
+                      {doc.citationCount} citations
+                    </span>
+                  </div>
+                </div>
 
-                  <div className="w-3/12 border-l pl-4">
-                    <h5 className="font-semibold mb-2">Criteria Selection</h5>
-                    {analysisCompleted && analyzedDocuments.includes(doc.id) && analysisData.analysisResults[doc.id] && (
-                      <>
-                        {analysisData.criteria.map(criterion => (
-                          <div key={criterion.id} className="flex items-center mb-1 relative">
-                            <span className="mr-2">Criteria {criterion.id}:</span>
-                            {analysisData.analysisResults[doc.id][criterion.id] === 'Yes' && <FaCheck className="text-green-500" />}
-                            {analysisData.analysisResults[doc.id][criterion.id] === 'No' && <FaTimes className="text-red-500" />}
-                            {analysisData.analysisResults[doc.id][criterion.id] === 'Uncertain' && <FaQuestion className="text-orange-500" />}
-                            <div className="relative inline-block ml-2">
-                              <button
-                                className="text-teal-500 hover:text-teal-700 focus:outline-none"
-                                onClick={() => handleTooltipClick(doc.id, criterion.id)}
-                              >
-                                <FaInfoCircle />
-                              </button>
-                              {activeTooltip && 
-                               activeTooltip.docId === doc.id && 
-                               activeTooltip.criterionId === criterion.id && (
-                                <div className="absolute bottom-full right-0 mb-2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-48">
-                                  {tooltips[doc.id] && tooltips[doc.id][criterion.id]}
-                                </div>
-                              )}
-                            </div>
+                <div className="w-3/12 border-l pl-4">
+                  <h5 className="font-semibold mb-2">Criteria Selection</h5>
+                  {analysisCompleted && analyzedDocuments.includes(doc.id) && analysisData.analysisResults[doc.id] && (
+                    <>
+                      {analysisData.criteria.map(criterion => (
+                        <div key={criterion.id} className="flex items-center mb-1 relative">
+                          <span className="mr-2">Criteria {criterion.id}:</span>
+                          {analysisData.analysisResults[doc.id][criterion.id] === 'Yes' && <FaCheck className="text-green-500" />}
+                          {analysisData.analysisResults[doc.id][criterion.id] === 'No' && <FaTimes className="text-red-500" />}
+                          {analysisData.analysisResults[doc.id][criterion.id] === 'Uncertain' && <FaQuestion className="text-orange-500" />}
+                          <div className="relative inline-block ml-2">
+                            <button
+                              className="text-teal-500 hover:text-teal-700 focus:outline-none"
+                              onClick={() => handleTooltipClick(doc.id, criterion.id)}
+                            >
+                              <FaInfoCircle />
+                            </button>
+                            {activeTooltip && 
+                             activeTooltip.docId === doc.id && 
+                             activeTooltip.criterionId === criterion.id && (
+                              <div className="absolute bottom-full right-0 mb-2 bg-gray-800 text-white text-xs rounded py-1 px-2 z-10 w-48">
+                                {tooltips[doc.id] && tooltips[doc.id][criterion.id]}
+                              </div>
+                            )}
                           </div>
-                        ))}
+                        </div>
+                      ))}
+                    </>
+                  )}
+                  {(!analysisCompleted || !analyzedDocuments.includes(doc.id)) && (
+                    <p className="text-sm text-gray-500">Select this document and click "Analyze" to see criteria fulfillment.</p>
+                  )}
+                  <button
+                    onClick={() => handleIncludeDocument(doc.id)}
+                    className={`mt-4 px-3 py-1 rounded-full flex items-center justify-center transition-colors duration-200 ${
+                      includedDocuments.includes(doc.id)
+                        ? 'bg-green-500 text-white'
+                        : 'bg-white text-green-500 border border-green-500'
+                    }`}
+                  >
+                    {includedDocuments.includes(doc.id) ? (
+                      <>
+                        <FaCheck className="mr-1" /> Added
+                      </>
+                    ) : (
+                      <>
+                        <FaFileAlt className="mr-1" /> Include in review
                       </>
                     )}
-                    {(!analysisCompleted || !analyzedDocuments.includes(doc.id)) && (
-                      <p className="text-sm text-gray-500">Select this document and click "Analyze" to see criteria fulfillment.</p>
-                    )}
-                    <button
-                      onClick={() => handleIncludeDocument(doc.id)}
-                      className={`mt-4 px-3 py-1 rounded-full flex items-center justify-center transition-colors duration-200 ${
-                        includedDocuments.includes(doc.id)
-                          ? 'bg-green-500 text-white'
-                          : 'bg-white text-green-500 border border-green-500'
-                      }`}
-                    >
-                      {includedDocuments.includes(doc.id) ? (
-                        <>
-                          <FaCheck className="mr-1" /> Added
-                        </>
-                      ) : (
-                        <>
-                          <FaFileAlt className="mr-1" /> Include in review
-                        </>
-                      )}
-                    </button>
-                  </div>
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
-        </>
-      )}
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
