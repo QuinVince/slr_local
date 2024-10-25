@@ -28,7 +28,7 @@ interface SynonymGroup {
 }
 
 const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuery, savedQueries, onClearQueries }) => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [queryName, setQueryName] = useState('');
   const [naturalLanguageQuery, setNaturalLanguageQuery] = useState(initialData?.description || '');
   const [pubMedQuery, setPubMedQuery] = useState('');
@@ -46,9 +46,22 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
   const [isSynonymsLoading, setIsSynonymsLoading] = useState(false);
   const [selectedConceptIndex, setSelectedConceptIndex] = useState(0);
 
+  // Add these states at the beginning of the component
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
+  const [isGeneratingPubMed, setIsGeneratingPubMed] = useState(false);
+  const [isGeneratingSynonyms, setIsGeneratingSynonyms] = useState(false);
+
+  // Add this at the beginning of the component
+  const steps = [
+    { id: 0, name: 'Nouvelle query' },  // Changed from 1 to 0
+    { id: 1, name: 'Questions' },       // Changed from 2 to 1
+    { id: 2, name: 'Pubmed query' },    // Changed from 3 to 2
+    { id: 3, name: 'Sauvegarde' }       // Changed from 4 to 3
+  ];
+
   useEffect(() => {
     if (initialData?.description) {
-      setIsLoading(true);
+      setIsGeneratingQuestions(true);
       generateQuestions(initialData.description)
         .then(data => {
           setQuestions(data.questions);
@@ -58,7 +71,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
           console.error('Error generating questions:', error);
         })
         .finally(() => {
-          setIsLoading(false);
+          setIsGeneratingQuestions(false);
         });
     }
   }, [initialData]);
@@ -107,23 +120,43 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
   };
 
   const handleNextStep = async () => {
-    setIsLoading(true);
     try {
-      if (step === 1) {
-        // Generate PubMed query based on answers
+      if (step === 0) {
+        setIsGeneratingPubMed(true);
+        // First, generate PubMed query only
         const data = await generatePubMedQuery(naturalLanguageQuery, answers);
         const cleanedQuery = data.query.replace(/```/g, '').trim();
         setPubMedQuery(cleanedQuery);
         await estimateDocuments(cleanedQuery);
-        setSynonymGroups([]); // Clear synonyms when generating a new PubMed query
-        setStep(2); // Move to step 2
-      } else if (step === 2 && isCollected) {
-        setStep(3); // Move to step 3 only if documents are collected
+        setIsGeneratingPubMed(false);
+        setStep(1);
+
+        // After PubMed query is displayed, generate synonyms
+        setTimeout(async () => {
+          setIsGeneratingSynonyms(true);
+          try {
+            const synonymsResponse = await axios.post('http://localhost:8000/generate_synonyms', {
+              description: naturalLanguageQuery,
+              questions: questions,
+              answers: answers,
+              query: cleanedQuery,
+            });
+            if (Array.isArray(synonymsResponse.data.synonym_groups)) {
+              setSynonymGroups(synonymsResponse.data.synonym_groups);
+            }
+          } catch (error) {
+            console.error('Error generating initial synonyms:', error);
+            setSynonymGroups([]);
+          } finally {
+            setIsGeneratingSynonyms(false);
+          }
+        }, 100); // Small delay to ensure query is displayed first
+      } else if (step === 1 && isCollected) {
+        setStep(2);
       }
     } catch (error) {
       console.error('Error in step transition:', error);
-    } finally {
-      setIsLoading(false);
+      setIsGeneratingPubMed(false);
     }
   };
 
@@ -154,7 +187,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
     onSaveQuery(newQuery);
     setCurrentQuery(newQuery);
     // Reset form
-    setStep(1);
+    setStep(0);
     setQueryName('');
     setNaturalLanguageQuery('');
     setPubMedQuery('');
@@ -195,19 +228,21 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
     setPubMedQuery(prevQuery => prevQuery + ' OR ' + synonym);
   };
 
-  // Add this new function to handle return to landing page
+  // Replace the existing handleReturn function with this one
   const handleReturn = () => {
-    setStep(1);
-    setQueryName('');
-    // Keep the initial description from initialData
-    setNaturalLanguageQuery(initialData?.description || '');
-    setPubMedQuery('');
-    setQuestions([]);
-    setAnswers({});
-    setCollectedDocuments({ pubmed: 0, semanticScholar: 0 });
-    setIsCollected(false);
-    // Call the parent component to return to landing page
-    onSaveQuery(null as any);
+    switch (step) {
+      case 0: // At questions step
+      case 1: // At pubmed query step
+        // Return to landing page
+        onSaveQuery(null as any);
+        break;
+      case 2: // At save step
+        // Return to pubmed query step
+        setStep(1);
+        break;
+      default:
+        break;
+    }
   };
 
   // Add these functions to handle Enter key press in answers and query name
@@ -229,13 +264,17 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
 
   const renderStep = () => {
     switch (step) {
-      case 1:
+      case 0:  // Changed from case 1
         return (
           <div>
             <h2 className="text-xl font-semibold mb-4 text-teal-700">Generated Questions</h2>
-            {isLoading ? (
-              <div className="text-center py-4">
-                <p>Generating PubMed query...</p>
+            {isGeneratingQuestions ? (
+              <div className="text-center py-4 flex items-center justify-center">
+                <svg className="animate-spin h-5 w-5 mr-3 text-teal-500" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <p>Generating questions...</p>
               </div>
             ) : (
               <>
@@ -258,68 +297,130 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                 ))}
                 <button
                   onClick={handleNextStep}
-                  className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center"
-                  disabled={isLoading}
+                  className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center justify-center"
+                  disabled={isGeneratingPubMed}
                 >
-                  Generate PubMed Query <FaArrowRight className="ml-2" />
+                  {isGeneratingPubMed ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Generating PubMed Query...
+                    </>
+                  ) : (
+                    <>
+                      Generate PubMed Query <FaArrowRight className="ml-2" />
+                    </>
+                  )}
                 </button>
               </>
             )}
           </div>
         );
-      case 2:
+      case 1:  // Changed from case 2
         return (
           <div>
             <h2 className="text-xl font-semibold mb-4 text-teal-700">PubMed Query and Synonyms</h2>
-            <div className="flex flex-col gap-4">
-              <div className="w-full">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Generated PubMed Query</label>
-                <textarea
-                  value={pubMedQuery}
-                  onChange={(e) => setPubMedQuery(e.target.value)}
-                  className="w-full px-3 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  rows={5}
-                  placeholder="Generated PubMed query..."
-                />
-                {estimatedDocuments !== null && (
-                  <p className="mt-2 text-teal-700">
-                    Estimated number of documents: <span className="font-bold">{estimatedDocuments}</span>
-                  </p>
-                )}
+            {isGeneratingPubMed ? (
+              <div className="text-center py-4 flex items-center justify-center">
+                <svg className="animate-spin h-5 w-5 mr-3 text-teal-500" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <p>Generating PubMed query...</p>
               </div>
-              
-              <div className="w-full">
-                <div className="flex justify-between items-center mb-4">
-                  <label className="block text-sm font-medium text-gray-700">Available Synonyms</label>
-                  <button
-                    onClick={handleGetSynonyms}
-                    className="px-3 py-1 text-sm bg-teal-100 text-teal-700 rounded-md hover:bg-teal-200"
-                    disabled={isSynonymsLoading}
-                  >
-                    {isSynonymsLoading ? 'Loading...' : 'Refresh Synonyms'}
-                  </button>
+            ) : (
+              <div className="flex flex-col gap-4">
+                <div className="w-full">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Generated PubMed Query</label>
+                  <textarea
+                    value={pubMedQuery}
+                    onChange={(e) => setPubMedQuery(e.target.value)}
+                    className="w-full px-3 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    rows={5}
+                    placeholder="Generated PubMed query..."
+                  />
+                  {estimatedDocuments !== null && (
+                    <p className="mt-2 text-teal-700">
+                      Estimated number of documents: <span className="font-bold">{estimatedDocuments}</span>
+                    </p>
+                  )}
                 </div>
-                <SynonymList 
-                  synonymGroups={synonymGroups} 
-                  selectedConceptIndex={selectedConceptIndex}
-                  onSynonymClick={handleSynonymClick} 
-                  onGetSynonyms={handleGetSynonyms}
-                  isSynonymsLoading={isSynonymsLoading}
-                />
+                
+                {isGeneratingSynonyms ? (
+                  <div className="text-center py-4 flex items-center justify-center">
+                    <svg className="animate-spin h-5 w-5 mr-3 text-teal-500" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    <p>Generating synonyms...</p>
+                  </div>
+                ) : (
+                  <div className="w-full">
+                    <div className="flex justify-between items-center mb-4">
+                      <label className="block text-sm font-medium text-gray-700">Available Synonyms</label>
+                      <button
+                        onClick={handleGetSynonyms}
+                        className="px-3 py-1 text-sm bg-teal-100 text-teal-700 rounded-md hover:bg-teal-200"
+                        disabled={isSynonymsLoading}
+                      >
+                        {isSynonymsLoading ? 'Loading...' : 'Refresh Synonyms'}
+                      </button>
+                    </div>
+                    <SynonymList 
+                      synonymGroups={synonymGroups} 
+                      selectedConceptIndex={selectedConceptIndex}
+                      onSynonymClick={handleSynonymClick} 
+                      onGetSynonyms={handleGetSynonyms}
+                      isSynonymsLoading={isSynonymsLoading}
+                    />
+                  </div>
+                )}
+                
+                <div className="mt-4">
+                  <button
+                    onClick={handleCollectDocuments}
+                    className={`w-full px-4 py-2 ${isCollected ? 'bg-teal-700' : 'bg-teal-500'} text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center justify-center`}
+                    disabled={isCollecting || isCollected}
+                  >
+                    {isCollecting ? 'Collecting...' : isCollected ? 'Documents Collected' : 'Collect Documents'}
+                    <FaDownload className="ml-2" />
+                  </button>
+
+                  {isCollecting && (
+                    <div className="mt-4">
+                      <p className="text-teal-700">
+                        Collecting documents: {collectedDocuments.pubmed + collectedDocuments.semanticScholar} / {totalDocuments}
+                      </p>
+                      <div className="w-full bg-teal-200 rounded-full h-2.5 mt-2">
+                        <div 
+                          className="bg-teal-600 h-2.5 rounded-full transition-all duration-200" 
+                          style={{ width: `${((collectedDocuments.pubmed + collectedDocuments.semanticScholar) / totalDocuments) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {isCollected && (
+                    <div className="mt-4">
+                      <p className="text-teal-700 text-center">
+                        Collection complete! {totalDocuments} documents collected
+                      </p>
+                      <button
+                        onClick={() => setStep(2)}
+                        className="mt-4 w-full px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center justify-center"
+                      >
+                        Save Query <FaArrowRight className="ml-2" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-            
-            <div className="mt-6">
-              <button
-                onClick={() => setStep(3)}
-                className="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center"
-              >
-                Save Query <FaArrowRight className="ml-2" />
-              </button>
-            </div>
+            )}
           </div>
         );
-      case 3:
+      case 2:  // Changed from case 3
         return (
           <div>
             <h2 className="text-xl font-semibold mb-4 text-teal-700">Save Query</h2>
@@ -345,18 +446,67 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-6">  {/* Removed bg-white and shadow classes */}
+      <div className="mb-8">
         <button
           onClick={handleReturn}
-          className="px-4 py-2 text-teal-600 border border-teal-600 rounded-md hover:bg-teal-50 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+          className="absolute top-4 left-4 text-teal-600 hover:text-teal-700 p-2 rounded-full hover:bg-teal-50 transition-colors"
+          aria-label="Return"
         >
-          ← Return
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
         </button>
-        <h1 className="text-2xl font-bold text-teal-700 flex items-center">
-          <FaSearch className="mr-2" /> Query Generator
-        </h1>
-        <div className="w-24"></div> {/* This empty div helps center the title */}
+        
+        <div className="relative mt-8"> {/* Added margin top to account for return button */}
+          <div className="flex justify-between items-center">
+            {steps.map((stepItem, index) => (
+              <div key={stepItem.id} className="flex-1 relative">
+                {index > 0 && (
+                  <div 
+                    className={`absolute w-full h-0.5 top-1/2 -left-1/2 transform -translate-y-1/2 ${
+                      step > index ? 'bg-teal-500' : 'bg-gray-300'
+                    }`}
+                  />
+                )}
+                <div className="relative flex flex-col items-center">
+                  <div 
+                    className={`w-8 h-8 rounded-full border-2 flex items-center justify-center relative z-10 
+                      ${
+                        // New query (id: 0) is always filled green
+                        stepItem.id === 0 ? 'border-teal-500 bg-teal-500' : 
+                        // Questions (id: 1) is filled green when on pubmed or save step
+                        stepItem.id === 1 ? (step > 0 ? 'border-teal-500 bg-teal-500' : 'border-teal-500 bg-white') :
+                        // Pubmed query (id: 2) is filled green only on save step
+                        stepItem.id === 2 ? (step > 1 ? 'border-teal-500 bg-teal-500' : 'border-teal-500 bg-white') :
+                        // Save (id: 3) is always white filled with colored border when active
+                        stepItem.id === 3 ? (step === 3 ? 'border-teal-500 bg-white' : 'border-gray-300 bg-white') :
+                        'border-gray-300 bg-white'
+                      }`}
+                  >
+                    {step > stepItem.id && stepItem.id !== 0 && (
+                      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    {stepItem.id === 0 && (
+                      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                  <span 
+                    className={`mt-2 text-sm ${
+                      step >= stepItem.id ? 'text-teal-500 font-medium' : 'text-gray-500'
+                    }`}
+                  >
+                    {stepItem.name}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
       {renderStep()}
     </div>

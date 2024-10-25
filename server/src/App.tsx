@@ -72,8 +72,8 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen bg-white">
+      <header className="bg-white border-b">
         <div className="container mx-auto px-4 py-4">
           <h1 className="text-2xl font-bold text-teal-700">SLR Assistant</h1>
         </div>
