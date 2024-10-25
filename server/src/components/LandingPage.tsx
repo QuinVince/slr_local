@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaSearch, FaExchangeAlt, FaFileAlt, FaProjectDiagram, FaArrowRight, FaChevronDown, FaChevronUp, FaFileAlt as FaFileAltIcon, FaUnlock } from 'react-icons/fa';
+import { FaSearch, FaExchangeAlt, FaFileAlt, FaProjectDiagram, FaArrowRight, FaChevronDown, FaChevronUp, FaFileAlt as FaFileAltIcon, FaUnlock, FaTrash } from 'react-icons/fa';
 import QueryGenerator from './QueryGenerator';
 import DuplicateAnalysis from './DuplicateAnalysis';
 import DocumentAnalysis from './DocumentAnalysis';
@@ -13,11 +13,13 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 interface LandingPageProps {
   savedQueries: SavedQuery[];
   onSaveQuery: (query: SavedQuery) => void;
+  onRemoveQuery: (queryId: string) => void;
+  onClearQueries: () => void;
   analysisData: AnalysisData;
   updateAnalysisData: (newData: Partial<AnalysisData>) => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, analysisData, updateAnalysisData }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, onRemoveQuery, onClearQueries, analysisData, updateAnalysisData }) => {
   const [activeComponent, setActiveComponent] = useState<string>('query');
   const [description, setDescription] = useState('');
   const [showQueryGenerator, setShowQueryGenerator] = useState(false);
@@ -213,17 +215,34 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, an
 
           {savedQueries.length > 0 && (
             <div className="bg-white shadow-md rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-teal-700 mb-4">Saved Queries</h2>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-teal-700">Saved Queries</h2>
+                <button
+                  onClick={onClearQueries}
+                  className="px-3 py-1 text-red-600 border border-red-600 rounded hover:bg-red-50 flex items-center"
+                >
+                  <FaTrash className="mr-2" />
+                  Clear All
+                </button>
+              </div>
               <div className="space-y-4">
                 {savedQueries.map((query) => (
                   <div key={query.id} className="border rounded-lg">
-                    <button
-                      onClick={() => toggleQueryExpansion(query.id)}
-                      className="w-full px-4 py-3 flex justify-between items-center hover:bg-gray-50"
-                    >
-                      <span className="font-medium text-teal-700">{query.name}</span>
-                      {expandedQuery === query.id ? <FaChevronUp /> : <FaChevronDown />}
-                    </button>
+                    <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
+                      <button
+                        onClick={() => toggleQueryExpansion(query.id)}
+                        className="flex-1 flex justify-between items-center"
+                      >
+                        <span className="font-medium text-teal-700">{query.name}</span>
+                        {expandedQuery === query.id ? <FaChevronUp /> : <FaChevronDown />}
+                      </button>
+                      <button
+                        onClick={() => onRemoveQuery(query.id)}
+                        className="ml-4 text-red-600 hover:text-red-700 p-1 rounded hover:bg-red-50"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
                     {expandedQuery === query.id && (
                       <div className="p-4 border-t">
                         <div className="flex">

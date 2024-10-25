@@ -55,7 +55,17 @@ export interface AnalysisData {
 }
 
 const App: React.FC = () => {
-  const [savedQueries, setSavedQueries] = useState<SavedQuery[]>([]);
+  const [savedQueries, setSavedQueries] = useState<SavedQuery[]>(() => {
+    // Load saved queries from localStorage on initial render
+    const saved = localStorage.getItem('savedQueries');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Update localStorage whenever savedQueries changes
+  useEffect(() => {
+    localStorage.setItem('savedQueries', JSON.stringify(savedQueries));
+  }, [savedQueries]);
+
   const [analysisData, setAnalysisData] = useState<AnalysisData>({
     selectedQuery: null,
     documents: [],
@@ -64,7 +74,17 @@ const App: React.FC = () => {
   });
 
   const handleSaveQuery = (query: SavedQuery) => {
-    setSavedQueries([...savedQueries, query]);
+    setSavedQueries(prev => [...prev, query]);
+  };
+
+  const handleRemoveQuery = (queryId: string) => {
+    setSavedQueries(prev => prev.filter(q => q.id !== queryId));
+  };
+
+  const handleClearAllQueries = () => {
+    if (window.confirm('Are you sure you want to remove all saved queries?')) {
+      setSavedQueries([]);
+    }
   };
 
   const updateAnalysisData = (newData: Partial<AnalysisData>) => {
@@ -90,6 +110,8 @@ const App: React.FC = () => {
         <LandingPage
           savedQueries={savedQueries}
           onSaveQuery={handleSaveQuery}
+          onRemoveQuery={handleRemoveQuery}
+          onClearQueries={handleClearAllQueries}
           analysisData={analysisData}
           updateAnalysisData={updateAnalysisData}
         />
