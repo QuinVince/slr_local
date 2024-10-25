@@ -197,17 +197,33 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
 
   // Add this new function to handle return to landing page
   const handleReturn = () => {
-    if (window.confirm('Are you sure you want to return? Your progress will be lost.')) {
-      setStep(1);
-      setQueryName('');
-      setNaturalLanguageQuery('');
-      setPubMedQuery('');
-      setQuestions([]);
-      setAnswers({});
-      setCollectedDocuments({ pubmed: 0, semanticScholar: 0 });
-      setIsCollected(false);
-      // Call the parent component to return to landing page
-      onSaveQuery(null as any);
+    setStep(1);
+    setQueryName('');
+    // Keep the initial description from initialData
+    setNaturalLanguageQuery(initialData?.description || '');
+    setPubMedQuery('');
+    setQuestions([]);
+    setAnswers({});
+    setCollectedDocuments({ pubmed: 0, semanticScholar: 0 });
+    setIsCollected(false);
+    // Call the parent component to return to landing page
+    onSaveQuery(null as any);
+  };
+
+  // Add these functions to handle Enter key press in answers and query name
+  const handleAnswerKeyPress = (e: React.KeyboardEvent, isLast: boolean) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (isLast) {
+        handleNextStep();
+      }
+    }
+  };
+
+  const handleQueryNameKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSaveQuery();
     }
   };
 
@@ -234,6 +250,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                       type="text"
                       value={answers[question] || ''}
                       onChange={(e) => handleAnswerChange(question, e.target.value)}
+                      onKeyPress={(e) => handleAnswerKeyPress(e, index === questions.length - 1)}
                       className="w-full px-3 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                       placeholder="Your answer..."
                     />
@@ -310,6 +327,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
               type="text"
               value={queryName}
               onChange={(e) => setQueryName(e.target.value)}
+              onKeyPress={handleQueryNameKeyPress}
               className="w-full px-3 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter query name"
             />
@@ -341,103 +359,6 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
         <div className="w-24"></div> {/* This empty div helps center the title */}
       </div>
       {renderStep()}
-      
-      {savedQueries.length > 0 && (
-        <div className="mt-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold text-teal-700 flex items-center">
-              <FaList className="mr-2" /> Saved Queries
-            </h2>
-            <button
-              onClick={onClearQueries}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center"
-            >
-              <FaTrash className="mr-2" /> Clear All Queries
-            </button>
-          </div>
-          <div className="space-y-6">
-            {savedQueries.map((query) => (
-              <div key={query.id} className="bg-white border border-teal-200 rounded-lg shadow-md overflow-hidden">
-                <div className="bg-teal-500 text-white px-4 py-2">
-                  <h3 className="font-semibold text-lg">{query.name}</h3>
-                </div>
-                <div className="p-4 flex">
-                  <div className="w-1/2 pr-4">
-                    <p className="text-gray-600 mb-2">{query.description}</p>
-                    <div className="bg-gray-100 p-3 rounded-md text-sm text-gray-700 overflow-x-auto mb-3">
-                      <code className="whitespace-pre-wrap">{query.pubmedQuery}</code>
-                    </div>
-                    <div className="flex justify-between items-center text-sm text-gray-500">
-                      <span>{query.questions.length} questions</span>
-                      <span>{Object.keys(query.answers).length} answers</span>
-                    </div>
-                  </div>
-                  <div className="w-1/2 pl-4 border-l border-teal-200">
-                    <h4 className="text-lg font-semibold mb-4 text-teal-700">Query Statistics</h4>
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                      <div className="bg-teal-100 p-4 rounded-lg flex items-center">
-                        <FaFileAlt className="text-teal-600 text-2xl mr-3" />
-                        <div>
-                          <p className="text-sm text-teal-600">Total Papers</p>
-                          <p className="text-2xl font-bold text-teal-800">{query.paperCount}</p>
-                        </div>
-                      </div>
-                      <div className="bg-teal-100 p-4 rounded-lg flex items-center">
-                        <FaUnlock className="text-teal-600 text-2xl mr-3" />
-                        <div>
-                          <p className="text-sm text-teal-600">Free Full Text</p>
-                          <p className="text-2xl font-bold text-teal-800">{query.freeFullTextCount}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center mt-2 text-sm">
-                      <div className="flex items-center">
-                        <FaFileAlt className="mr-1" />
-                        <span>{query.collectedDocuments.pubmed + query.collectedDocuments.semanticScholar} docs</span>
-                      </div>
-                      <div className="flex space-x-2">
-                        <span className="bg-teal-600 text-white rounded-full px-2 py-1">
-                          PubMed: {query.collectedDocuments.pubmed}
-                        </span>
-                        <span className="bg-teal-600 text-white rounded-full px-2 py-1">
-                          Semantic Scholar: {query.collectedDocuments.semanticScholar}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mt-4" style={{ height: '200px' }}>
-                      <Bar 
-                        data={{
-                          labels: Object.keys(query.yearDistribution).sort(),
-                          datasets: [{
-                            label: 'Papers per Year',
-                            data: Object.values(query.yearDistribution),
-                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1,
-                          }]
-                        }} 
-                        options={{
-                          responsive: true,
-                          maintainAspectRatio: false,
-                          plugins: {
-                            legend: {
-                              display: false,
-                            },
-                            title: {
-                              display: true,
-                              text: 'Papers Distribution by Year',
-                            },
-                          },
-                        }} 
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
