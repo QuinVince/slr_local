@@ -283,10 +283,6 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
               </div>
             ) : (
               <>
-                <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-                  <h3 className="font-medium text-gray-700 mb-2">Your Research Description:</h3>
-                  <p className="text-gray-600">{naturalLanguageQuery}</p>
-                </div>
                 {questions.map((question, index) => (
                   <div key={index} className="mb-4">
                     <p className="font-semibold">{question}</p>
@@ -442,8 +438,8 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
   };
 
   return (
-    <div className="p-6">
-      <div className="flex items-center mb-8"> {/* Changed to flex container */}
+    <div className="p-4"> {/* Reduced padding */}
+      <div className="flex items-center mb-4"> {/* Reduced margin */}
         <button
           onClick={handleReturn}
           className="text-teal-600 hover:text-teal-700 p-2 rounded-full hover:bg-teal-50 transition-colors"
@@ -454,7 +450,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
           </svg>
         </button>
         
-        <div className="ml-8 w-8/12"> {/* Added margin-left and reduced width */}
+        <div className="ml-8 w-8/12">
           <div className="flex justify-between items-center">
             {steps.map((stepItem, index) => (
               <div key={stepItem.id} className="flex-1 relative">
@@ -500,7 +496,66 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
           </div>
         </div>
       </div>
-      {renderStep()}
+
+      {/* Update case 0 in renderStep */}
+      {step === 0 && (
+        <div className="max-w-2xl mx-auto mt-8"> {/* Added max width and center alignment */}
+          <h2 className="text-2xl font-semibold text-center text-teal-700 mb-2">
+            Please answer the following questions
+          </h2>
+          <p className="text-gray-600 text-center mb-8">
+            This step will help to generate a relevant PubMed query
+          </p>
+
+          {isGeneratingQuestions ? (
+            <div className="text-center py-4 flex items-center justify-center">
+              <svg className="animate-spin h-5 w-5 mr-3 text-teal-500" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <p>Generating questions...</p>
+            </div>
+          ) : (
+            <>
+              {questions.map((question, index) => (
+                <div key={index} className="mb-6"> {/* Increased margin between questions */}
+                  <p className="font-semibold text-center mb-2">{question}</p>
+                  <input
+                    type="text"
+                    value={answers[question] || ''}
+                    onChange={(e) => handleAnswerChange(question, e.target.value)}
+                    onKeyPress={(e) => handleAnswerKeyPress(e, index === questions.length - 1)}
+                    className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    placeholder="Your answer..."
+                  />
+                </div>
+              ))}
+              <div className="flex justify-center"> {/* Center the button */}
+                <button
+                  onClick={handleNextStep}
+                  className="px-6 py-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center justify-center"
+                  disabled={isGeneratingPubMed}
+                >
+                  {isGeneratingPubMed ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Generating PubMed Query...
+                    </>
+                  ) : (
+                    <>
+                      Generate PubMed Query <FaArrowRight className="ml-2" />
+                    </>
+                  )}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+      {step !== 0 && renderStep()}
     </div>
   );
 };
