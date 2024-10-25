@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaPlusCircle } from 'react-icons/fa';
+import { FaPlusCircle, FaSync } from 'react-icons/fa';
 
 interface SynonymGroup {
   concept: string;
@@ -11,58 +11,67 @@ interface SynonymListProps {
   synonymGroups: SynonymGroup[];
   selectedConceptIndex: number;
   onSynonymClick: (synonym: string) => void;
+  onConceptSelect: (index: number) => void;
   onGetSynonyms: () => void;
   isSynonymsLoading: boolean;
 }
 
-const colors = [
-  'bg-red-100 text-red-700 hover:bg-red-200',
-  'bg-blue-100 text-blue-700 hover:bg-blue-200',
-  'bg-green-100 text-green-700 hover:bg-green-200',
-  'bg-yellow-100 text-yellow-700 hover:bg-yellow-200',
-  'bg-purple-100 text-purple-700 hover:bg-purple-200',
-];
-
-const SynonymList: React.FC<SynonymListProps> = ({ 
-  synonymGroups = [], 
+const SynonymList: React.FC<SynonymListProps> = ({
+  synonymGroups,
   selectedConceptIndex,
-  onSynonymClick, 
-  onGetSynonyms, 
-  isSynonymsLoading 
+  onSynonymClick,
+  onConceptSelect,
+  onGetSynonyms,
+  isSynonymsLoading
 }) => {
-  const selectedGroup = synonymGroups[selectedConceptIndex];
+  if (isSynonymsLoading) {
+    return <div>Loading synonyms...</div>;
+  }
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-semibold text-teal-700">Suggested Synonyms:</h3>
+    <div>
+      {/* Concepts Selection with Dropdown */}
+      <div className="flex items-center mb-4">
+        <div className="flex items-center w-1/2">
+          <label className="text-sm font-medium text-gray-700 mr-3">
+            Select keywords:
+          </label>
+          <select
+            value={selectedConceptIndex}
+            onChange={(e) => onConceptSelect(Number(e.target.value))}
+            className="w-full px-3 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+          >
+            {synonymGroups.map((group, index) => (
+              <option key={index} value={index}>
+                {group.abstraction}
+              </option>
+            ))}
+          </select>
+        </div>
         <button
           onClick={onGetSynonyms}
-          className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+          className="ml-3 text-teal-600 hover:text-teal-700 p-2 rounded-full hover:bg-teal-50 transition-colors"
           disabled={isSynonymsLoading}
         >
-          {isSynonymsLoading ? 'Loading...' : 'Get Synonyms / Related Terms'}
+          <FaSync className={`w-4 h-4 ${isSynonymsLoading ? 'animate-spin' : ''}`} />
         </button>
       </div>
-      <div className="flex-grow overflow-y-auto">
-        {selectedGroup && (
-          <div className="mb-4">
-            <h4 className="font-semibold text-teal-600 mb-2">{selectedGroup.abstraction}</h4>
-            <p className="text-sm text-gray-600 mb-2">Original: {selectedGroup.concept}</p>
-            <div className="flex flex-wrap gap-2">
-              {selectedGroup.synonyms.map((synonym, index) => (
-                <button
-                  key={index}
-                  onClick={() => onSynonymClick(synonym)}
-                  className={`px-3 py-1 rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center ${colors[selectedConceptIndex % colors.length]}`}
-                >
-                  <FaPlusCircle className="mr-1" /> {synonym}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+
+      {/* Synonyms Display */}
+      {synonymGroups.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {synonymGroups[selectedConceptIndex]?.synonyms.map((synonym, index) => (
+            <button
+              key={index}
+              onClick={() => onSynonymClick(synonym)}
+              className="inline-flex items-center px-3 py-1 rounded-full bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors"
+            >
+              <FaPlusCircle className="mr-1" />
+              {synonym}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

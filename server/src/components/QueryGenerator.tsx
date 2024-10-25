@@ -262,6 +262,11 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
     }
   };
 
+  // Add this handler in QueryGenerator
+  const handleConceptSelect = (index: number) => {
+    setSelectedConceptIndex(index);
+  };
+
   const renderStep = () => {
     switch (step) {
       case 0:  // Changed from case 1
@@ -358,21 +363,12 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                   </div>
                 ) : (
                   <div className="w-full">
-                    <div className="flex justify-between items-center mb-4">
-                      <label className="block text-sm font-medium text-gray-700">Available Synonyms</label>
-                      <button
-                        onClick={handleGetSynonyms}
-                        className="px-3 py-1 text-sm bg-teal-100 text-teal-700 rounded-md hover:bg-teal-200"
-                        disabled={isSynonymsLoading}
-                      >
-                        {isSynonymsLoading ? 'Loading...' : 'Refresh Synonyms'}
-                      </button>
-                    </div>
                     <SynonymList 
                       synonymGroups={synonymGroups} 
                       selectedConceptIndex={selectedConceptIndex}
-                      onSynonymClick={handleSynonymClick} 
-                      onGetSynonyms={handleGetSynonyms}
+                      onSynonymClick={handleSynonymClick}
+                      onConceptSelect={handleConceptSelect}
+                      onGetSynonyms={handleGetSynonyms}  // Add this line
                       isSynonymsLoading={isSynonymsLoading}
                     />
                   </div>
@@ -446,11 +442,11 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
   };
 
   return (
-    <div className="p-6">  {/* Removed bg-white and shadow classes */}
-      <div className="mb-8">
+    <div className="p-6">
+      <div className="flex items-center mb-8"> {/* Changed to flex container */}
         <button
           onClick={handleReturn}
-          className="absolute top-4 left-4 text-teal-600 hover:text-teal-700 p-2 rounded-full hover:bg-teal-50 transition-colors"
+          className="text-teal-600 hover:text-teal-700 p-2 rounded-full hover:bg-teal-50 transition-colors"
           aria-label="Return"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -458,7 +454,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
           </svg>
         </button>
         
-        <div className="relative mt-8"> {/* Added margin top to account for return button */}
+        <div className="ml-8 w-8/12"> {/* Added margin-left and reduced width */}
           <div className="flex justify-between items-center">
             {steps.map((stepItem, index) => (
               <div key={stepItem.id} className="flex-1 relative">
@@ -471,32 +467,28 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                 )}
                 <div className="relative flex flex-col items-center">
                   <div 
-                    className={`w-8 h-8 rounded-full border-2 flex items-center justify-center relative z-10 
+                    className={`w-6 h-6 rounded-full border-3 flex items-center justify-center relative z-10 
                       ${
-                        // New query (id: 0) is always filled green
                         stepItem.id === 0 ? 'border-teal-500 bg-teal-500' : 
-                        // Questions (id: 1) is filled green when on pubmed or save step
                         stepItem.id === 1 ? (step > 0 ? 'border-teal-500 bg-teal-500' : 'border-teal-500 bg-white') :
-                        // Pubmed query (id: 2) is filled green only on save step
                         stepItem.id === 2 ? (step > 1 ? 'border-teal-500 bg-teal-500' : 'border-teal-500 bg-white') :
-                        // Save (id: 3) is always white filled with colored border when active
                         stepItem.id === 3 ? (step === 3 ? 'border-teal-500 bg-white' : 'border-gray-300 bg-white') :
                         'border-gray-300 bg-white'
                       }`}
                   >
                     {step > stepItem.id && stepItem.id !== 0 && (
-                      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}
                     {stepItem.id === 0 && (
-                      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}
                   </div>
                   <span 
-                    className={`mt-2 text-sm ${
+                    className={`mt-2 text-xs ${
                       step >= stepItem.id ? 'text-teal-500 font-medium' : 'text-gray-500'
                     }`}
                   >

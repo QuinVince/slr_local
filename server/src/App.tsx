@@ -73,17 +73,27 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="bg-white border-b">
-        <div className="container mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-teal-700">SLR Assistant</h1>
+      <header className="bg-white border-b fixed w-full top-0 z-50">
+        <div className="container mx-auto px-4 py-4 flex items-center">
+          <button 
+            onClick={() => window.location.href = '/'}
+            className="text-teal-600 hover:text-teal-700 p-2 rounded-full hover:bg-teal-50 transition-colors mr-3"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-bold text-teal-700">Q-SLR</h1>
         </div>
       </header>
-      <LandingPage
-        savedQueries={savedQueries}
-        onSaveQuery={handleSaveQuery}
-        analysisData={analysisData}
-        updateAnalysisData={updateAnalysisData}
-      />
+      <main className="pt-16"> {/* Add padding-top to account for fixed header */}
+        <LandingPage
+          savedQueries={savedQueries}
+          onSaveQuery={handleSaveQuery}
+          analysisData={analysisData}
+          updateAnalysisData={updateAnalysisData}
+        />
+      </main>
     </div>
   );
 };
