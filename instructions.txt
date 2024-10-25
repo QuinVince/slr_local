@@ -1,0 +1,87 @@
+You are a helpful AI coding assistant. MAke sure to follow my instructions precisely and to the letter. our goal is to output code for a React Typescript app both client and server. Generate all code in a single file and use Tailwind for styling.
+Here is your workflow to follow:
+I'll give you an initial idea for an app
+Ask me for clarification on parts of their idea that are underspecified (who is the app for, does the suer want specific features included).
+Once major ambiguities are resolved, proceed. If there are still minor ambiguities in the details, make assumptions and tell them to the suer.
+Generate a pseudcode plan for how the code will work.
+Write the code
+The starting point for your code file:
+export default function APP ... 
+
+1. Medical reviewers
+2. step by step process
+3. project based
+4. choose the design, elegant, modern, medical
+5. no
+6. No
+Let's start by the generating request feature. The user will:
+1. Choose a query name
+2. Describe his request in nauturlal language
+3. The system will return questions to confirm the topic (invent questions now, later we will use a python script calling a llm)
+4. the user answers
+5. The system provides a PubMed query (invent a relevant query now, later will use a llm)
+6. The system provides a list of synonyms to enrich the query clicking on them on the right
+7. The user modifies his query and validatae
+
+
+This an app designed to help people performing Systematic Litterature Review.
+Globally, the main features based on AI are already développed and available through API, there is 5 services:
+- Pubmed query generation and optimisation: Query_API
+- Publication documents collection: Collect_API
+- Filter documents based on API: Filter_API
+- Rank documents according their relevance: Rank_API
+- Extract information on documents like PICO for example: Extract_API
+
+I want that you propose a user friendly and beautiful app to use these services. As a reminder all services are answering the systematic litterature review process:
+1. Define topic and search on PubMed
+2. Collect documents (abstarcts + title) on PubMEd
+3. Filter and/or rank documents
+4. Read and extract information for exploitation
+
+
+Answers to question
+1. Medical reviewers
+2. step by step process
+3. project based
+4. choose the design, elegant, modern, medical
+5. no
+6. No
+Let's start by the generating request feature. The user will:
+1. Choose a query name
+2. Describe his request in nauturlal language
+3. The system will return questions to confirm the topic (invent questions now, later we will use a python script calling a llm)
+4. the user answers
+5. The system provides a PubMed query (invent a relevant query now, later will use a llm)
+6. The system provides a list of synonyms to enrich the query clicking on them on the right
+7. The user modifies his query and validatae
+
+Now, I need that once a query is saved, I would like to be able to use it as a base for document collection. We will simulate the documents collection process, the output will just be a number of documents collected (integer).
+Then every time a user save a query, add this query to a list at the bottom, where we can see all the saves queries. Also addthe following things in thelist:
+- query name
+- query content (just saved)
+- a button "collected documents"
+- a status "collected" or "not collected"
+- number of documents (if status equal to "collected" only)
+The idea is to be able to visualize that queries I did and access them for later.
+
+Please break down the code in some files, keep it simple, proceed step by step to build the app and explain how to run it as dev
+
+
+Now we go a step further.
+The generation part should be available in a first tab.
+In a second tab, I want to be able to selected saved queries from tab 1, where the documents has been collected.
+It could be done with a button create analysis. Once click, the user can
+1. Select query existing query
+2. Load documents to display the documents on the interface
+When the documents are loaded, they should be displayed row by row and boxes with from top to bottom, Title, Abstract snippet, Date of publication (please invent data for these). You can start with 3 documents only maximum.
+The user should also be able to select with a box ticking some documents displayed and filter the documents visible (filter with date and filter with keyword search).
+On the top, over the documents, after clicking on create analysis, the interface should create a space for "Criteria definition". The user can click on a plus button to add criteria to be provided in natural language in a dedicated field. Once the description is provided, the user click on save and the criteria is inlcuded in the analysis
+Once some documents are selected and at least one criteria is definedthe user  will click on analyze documents.
+This will take some time, trough apython code provided later, then use a processing bar.
+Once the analyzis is finished, for each document, on the left, the interface should display with icons if criteria defined is fullfilled. The possible answer are "Yes", "No", "Uncertain". You can use a green tick icon for Yes, a red cross icon for No, and an orange question mark for Uncertain.
+
+That is pretty good. To refine a bit:
+- When the user add a criteria, please add "Criteria i" in green bold where i is the ith criteria savec
+- After clicking on analyze, I would like that the results are showns in a column on the right. Column name is "Criteria selection" in front of each documents 
+- Also, in front of every icons for criteria fullfillment, indicate which Criteria i is it.
+- Also, add a tooltip on each icon where a justification of criteria fullfilment is provided (invent the data, one sentence is enough). The user can see it by clicking on an information icon (i inside a circle) on top rigght of the fullfiment icon 
