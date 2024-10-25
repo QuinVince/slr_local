@@ -107,83 +107,88 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-6 pt-16">
       {!showQueryGenerator && !showComponent && (
         <>
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-teal-700 mb-6">Que souhaitez-vous faire ?</h1>
-            {activeComponent === 'query' && (
-              <div className="bg-white shadow-md rounded-lg p-6">
-                <h2 className="text-xl font-semibold text-teal-700 mb-4">Describe your research</h2>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  className="w-full px-4 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  rows={1}
-                  placeholder="Décrivez votre recherche en langage naturel"
-                />
-                <div className="flex justify-end">
-                  <button
-                    onClick={handleDescriptionSubmit}
-                    className="mt-4 px-6 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-                  >
-                    →
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <h2 className="text-center text-black text-2xl font-bold mb-10">
+            Que souhaitez-vous faire ?
+          </h2>
 
-          <div className="flex space-x-4 mb-8">
+          {activeComponent === 'query' && (
+            <div className="relative mb-12">
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                onKeyPress={handleKeyPress}
+                className="w-full h-14 rounded-2xl border-2 border-[#62B6CB] shadow text-lg pl-5 pr-16"
+                placeholder="Décrivez votre recherche en langage naturel"
+              />
+              <button
+                onClick={handleDescriptionSubmit}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#C2E2EB] rounded-full flex items-center justify-center"
+              >
+                <FaArrowRight className="w-5 h-5 text-[#62B6CB]" />
+              </button>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <button
               onClick={() => handleNavigation('query')}
-              className={`flex-1 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center ${
-                activeComponent === 'query' ? 'bg-teal-500 text-white' : 'bg-white'
+              className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
+                activeComponent === 'query'
+                  ? 'bg-[#62B6CB] text-white hover:opacity-90'
+                  : 'border-2 border-[#D6D6D6] text-black hover:bg-[#C2E2EB]'
               }`}
             >
-              <FaSearch className="text-2xl mx-auto mb-2" />
-              <h3 className="text-lg font-semibold">Nouvelle query</h3>
+              <FaSearch className="w-6 h-6 mr-4" />
+              Nouvelle query
             </button>
 
             <button
               onClick={() => handleNavigation('duplicate')}
-              className={`flex-1 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center ${
-                activeComponent === 'duplicate' ? 'bg-teal-500 text-white' : 'bg-white'
+              className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
+                activeComponent === 'duplicate'
+                  ? 'bg-[#62B6CB] text-white hover:opacity-90'
+                  : 'border-2 border-[#D6D6D6] text-black hover:bg-[#C2E2EB]'
               }`}
             >
-              <FaExchangeAlt className="text-2xl mx-auto mb-2" />
-              <h3 className="text-lg font-semibold">Duplicate analysis</h3>
+              <FaExchangeAlt className="w-6 h-6 mr-4" />
+              Duplicate analysis
             </button>
 
             <button
               onClick={() => handleNavigation('document')}
-              className={`flex-1 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center ${
-                activeComponent === 'document' ? 'bg-teal-500 text-white' : 'bg-white'
+              className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
+                activeComponent === 'document'
+                  ? 'bg-[#62B6CB] text-white hover:opacity-90'
+                  : 'border-2 border-[#D6D6D6] text-black hover:bg-[#C2E2EB]'
               }`}
             >
-              <FaFileAlt className="text-2xl mx-auto mb-2" />
-              <h3 className="text-lg font-semibold">File screening</h3>
+              <FaFileAlt className="w-6 h-6 mr-4" />
+              File screening
             </button>
 
             <button
               onClick={() => handleNavigation('diagram')}
-              className={`flex-1 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center ${
-                activeComponent === 'diagram' ? 'bg-teal-500 text-white' : 'bg-white'
+              className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
+                activeComponent === 'diagram'
+                  ? 'bg-[#62B6CB] text-white hover:opacity-90'
+                  : 'border-2 border-[#D6D6D6] text-black hover:bg-[#C2E2EB]'
               }`}
             >
-              <FaProjectDiagram className="text-2xl mx-auto mb-2" />
-              <h3 className="text-lg font-semibold">PRISM diagram</h3>
+              <FaProjectDiagram className="w-6 h-6 mr-4" />
+              PRISM diagram
             </button>
           </div>
 
           {savedQueries.length > 0 && (
-            <div className="bg-white shadow-md rounded-lg p-6">
+            <div className="bg-white rounded-2xl border-2 border-[#D6D6D6] p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-teal-700">Saved Queries</h2>
+                <h2 className="text-xl font-bold text-black">Saved Queries</h2>
                 <button
                   onClick={onClearQueries}
-                  className="px-3 py-1 text-red-600 border border-red-600 rounded hover:bg-red-50 flex items-center"
+                  className="px-3 py-1 text-red-600 border-2 border-red-600 rounded-xl hover:bg-red-50 flex items-center"
                 >
                   <FaTrash className="mr-2" />
                   Clear All
@@ -191,18 +196,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
               </div>
               <div className="space-y-4">
                 {savedQueries.map((query) => (
-                  <div key={query.id} className="border rounded-lg">
-                    <div className="flex justify-between items-center px-4 py-3 hover:bg-gray-50">
+                  <div key={query.id} className="border-2 border-[#D6D6D6] rounded-xl">
+                    <div className="flex justify-between items-center px-4 py-3 hover:bg-[#C2E2EB]">
                       <button
                         onClick={() => toggleQueryExpansion(query.id)}
                         className="flex-1 flex justify-between items-center"
                       >
-                        <span className="font-medium text-teal-700">{query.name}</span>
+                        <span className="font-bold text-black">{query.name}</span>
                         {expandedQuery === query.id ? <FaChevronUp /> : <FaChevronDown />}
                       </button>
                       <button
                         onClick={() => onRemoveQuery(query.id)}
-                        className="ml-4 text-red-600 hover:text-red-700 p-1 rounded hover:bg-red-50"
+                        className="ml-4 text-red-600 hover:text-red-700 p-1 rounded-full hover:bg-red-50"
                       >
                         <FaTrash />
                       </button>
