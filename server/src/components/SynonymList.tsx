@@ -39,7 +39,7 @@ const SynonymList: React.FC<SynonymListProps> = ({
           <select
             value={selectedConceptIndex}
             onChange={(e) => onConceptSelect(Number(e.target.value))}
-            className="w-full px-3 py-2 border border-[#BDBDBD] rounded-md focus:outline-none focus:ring-2 focus:ring-[#62B6CB]"
+            className="w-full px-3 py-2 border border-[#BDBDBD] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#62B6CB]"
           >
             {synonymGroups.map((group, index) => (
               <option key={index} value={index}>

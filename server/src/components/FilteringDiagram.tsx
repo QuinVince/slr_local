@@ -113,7 +113,7 @@ const FilteringDiagram: React.FC<FilteringDiagramProps> = ({ initialData }) => {
           <div key={index} className="mb-2 flex items-start">
             <div className="w-1/3 pr-4">
               <div className="border-2 border-[#62B6CB] p-3 rounded-lg bg-white h-full">
-                <p className="text-sm text-[#BDBDBD]">{step.description}</p>
+                <p className="text-sm text-gray-600">{step.description}</p>
               </div>
             </div>
             <div className="w-1/3 px-4">

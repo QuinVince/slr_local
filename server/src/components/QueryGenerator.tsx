@@ -291,7 +291,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                       value={answers[question] || ''}
                       onChange={(e) => handleAnswerChange(question, e.target.value)}
                       onKeyPress={(e) => handleAnswerKeyPress(e, index === questions.length - 1)}
-                      className="w-full px-3 py-2 border border-[#BDBDBD] rounded-md focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
+                      className="w-full px-3 py-2 border border-[#BDBDBD] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
                       placeholder="Your answer..."
                     />
                   </div>
@@ -338,7 +338,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                   <textarea
                     value={pubMedQuery}
                     onChange={(e) => setPubMedQuery(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#BDBDBD] rounded-md focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
+                    className="w-full px-3 py-2 border border-[#BDBDBD] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
                     rows={5}
                     placeholder="Generated PubMed query..."
                   />

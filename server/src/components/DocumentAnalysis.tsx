@@ -18,7 +18,7 @@ export interface Document {
   authors: string[]; // Add this line
   selected: boolean;
   abstractExpanded: boolean;
-  studyType: 'rct' | 'observational' | 'meta-analysis' | 'other';
+  studyType: 'Meta-analysis' | 'Systematic Review' | 'RCT' | 'Cohort study' | 'Case-control study' | 'Case report' | 'Case series' | 'Expert opinion' | 'Narrative review' | 'Animal study' | 'In vitro study';
   pico: {
     population: string;
     intervention: string;
@@ -369,7 +369,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
         <h1 className="text-2xl font-bold mb-6 text-black">Abstract screening</h1>
         {/* Query Selector */}
         <select
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#62B6CB] mb-6"
+          className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#62B6CB] mb-6 border-b-4"
           onChange={handleQueryChange}
           value={analysisData.selectedQuery?.id || ''}
         >
@@ -435,19 +435,9 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
       <div className="w-2/3 p-6 flex flex-col h-full"> {/* Added flex and h-full */}
         {/* Active Criteria */}
         {analysisData.criteria.length > 0 && (
-          <div className="flex-shrink-0 mb-6"> {/* Added flex-shrink-0 */}
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-gray-700">Active Criteria:</h3>
-              <button
-                onClick={handleAnalyzeDocuments}
-                disabled={isAnalyzing}
-                className="bg-[#62B6CB] text-white px-4 py-2 rounded-md hover:bg-[#62B6CB] disabled:bg-gray-300 flex items-center"
-              >
-                <FaMagic className="mr-2" />
-                {isAnalyzing ? 'Analyzing...' : 'Analyze Corpus'}
-              </button>
-            </div>
-            <div className="space-y-2">
+          <div className="flex-shrink-0 mb-6 ">
+            <h3 className="font-semibold text-gray-700 mb-4">Active Criteria:</h3>
+            <div className="space-y-2 mb-4">
               {analysisData.criteria.map((criterion) => (
                 <div key={criterion.id} className="flex items-center justify-between gap-4 p-2 rounded-md">
                   <span className="p-3 border border-[#62B6CB] rounded-md hover:bg-[#C2E2EB] text-left w-full transition-colors group">
@@ -462,6 +452,17 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                 </div>
               ))}
             </div>
+            {/* Analyze Corpus button moved here */}
+            <div className="flex justify-center">
+              <button
+                onClick={handleAnalyzeDocuments}
+                disabled={isAnalyzing}
+                className="w-12/3 bg-[#62B6CB] text-white px-4 py-2 rounded-md hover:bg-[#62B6CB] disabled:bg-gray-300 flex items-center justify-center"
+              >
+                <FaMagic className="mr-2" />
+                {isAnalyzing ? 'Analyzing...' : 'Analyze Corpus'}
+              </button>
+            </div>
           </div>
         )}
 
@@ -472,7 +473,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="bg-white text-black px-3 py-1 rounded-md border border-[#D6D6D6] shadow hover:bg-gray-50 flex items-center"
+                  className="bg-white text-black px-3 py-1 rounded-md border border-[#D6D6D6] border-b-4 hover:bg-gray-50 flex items-center"
                 >
                   <FaFilter className="mr-2" />
                   Filters
@@ -497,6 +498,45 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                 Export
               </button>
             </div>
+          </div>
+        )}
+        {/* Documents Section Title */}
+        <h1 className="font-semibold text-black mb-3">Documents</h1>
+
+        {/* Analysis Results Section - only shown after analysis is completed */}
+        {analysisCompleted && (
+          <div className="mb-6 bg-[#F0F9FB] border border-[#C2E2EB] rounded-lg p-4 flex-shrink-0">
+            <h3 className="text-lg font-semibold text-[#62B6CB] mb-3 text-center">Analysis Results</h3>
+            {(() => {
+              const results = calculateAnalysisResults();
+              if (!results) return null;
+
+              return (
+                <div className="flex justify-between items-center mb-4 relative">
+                  <div className="w-[35%] bg-white p-3 rounded-md shadow-sm border border-[#E3F9FD] flex flex-col items-center">
+                    <p className="text-sm text-gray-600 text-center">Documents Analyzed</p>
+                    <p className="text-2xl font-bold text-[#62B6CB] text-center">{results.deduplicatedPapers}</p>
+                  </div>
+                  <div className="w-[30%] flex flex-col justify-center items-center">
+                    <div className="bg-white p-2 rounded-full border border-[#62B6CB] relative group mb-2">
+                      <FaArrowRight className="text-xl text-[#62B6CB]" />
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                        {results.reductionPercentage}% removed
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 text-center">
+                      {results.reductionPercentage}% less abstracts to read
+                    </p>
+                  </div>
+                  <div className="w-[35%] bg-white p-3 rounded-md shadow-sm border border-[#E3F9FD] flex flex-col items-center">
+                    <p className="text-sm text-gray-600 text-center">100% Criteria Matches</p>
+                    <p className="text-2xl font-bold text-[#62B6CB] text-center">
+                      {results.hundredPercentMatch}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
 
@@ -537,10 +577,18 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                 onChange={(e) => setStudyType(e.target.value)}
                 className="p-2 border border-gray-300 rounded-md w-full"
               >
-                <option value="all">All Types</option>
-                <option value="rct">Randomized Controlled Trial</option>
-                <option value="observational">Observational Study</option>
-                <option value="meta-analysis">Meta-Analysis</option>
+                    <option value="all">All Types</option>
+                    <option value="Meta-analysis">Meta-analysis</option>
+                    <option value="Systematic Review">Systematic Review</option>
+                    <option value="RCT">RCT</option>
+                    <option value="Cohort study">Cohort study</option>
+                    <option value="Case-control study">Case-control study</option>
+                    <option value="Case report">Case report</option>
+                    <option value="Case series">Case series</option>
+                    <option value="Expert opinion">Expert opinion</option>
+                    <option value="Narrative review">Narrative review</option>
+                    <option value="Animal study">Animal study</option>
+                    <option value="In vitro study">In vitro study</option>
               </select>
             </div>
           </div>
@@ -549,7 +597,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
         {/* Documents List - Now wrapped in ScrollableContainer */}
         <ScrollableContainer className="flex-grow">
           {filteredDocuments.map(doc => (
-            <div key={doc.id} className="border p-4 mb-4 rounded-md">
+            <div key={doc.id} className="border p-4 mb-4 rounded-2xl border-b-4 ">
               <div className="flex">
                 <div className="w-1/12 flex items-start justify-center pt-1">
                   <input

@@ -93,7 +93,7 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries }) =
             <select
               value={selectedQuery?.id || ''}
               onChange={handleQuerySelect}
-              className="w-full h-[50px] pl-10 pr-8 py-2 border border-[#BDBDBD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#62B6CB] appearance-none"
+              className="w-full h-[50px] pl-10 pr-8 py-2 border border-[#BDBDBD] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#62B6CB] appearance-none border-b-4"
             >
               <option value="">Select a query</option>
               {savedQueries.map(query => (
@@ -117,7 +117,7 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries }) =
 
         {/* Statistics Box - Reorganized layout */}
         {selectedQuery && (
-          <div className="w-full flex items-center justify-between h-[50px] bg-white rounded-lg border border-[#BDBDBD] p-4">
+          <div className="w-full flex items-center justify-between h-[50px] bg-white rounded-xl border border-[#BDBDBD] p-4 border-b-4">
             <div className="flex items-center justify-start">
               <span className="text-sm text-black">Pubmed papers</span>
               <span className="px-3 py-1 rounded-full bg-[#62B6CB] text-white text-sm font-medium ml-2">
