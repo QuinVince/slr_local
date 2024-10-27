@@ -110,6 +110,39 @@ const CRITERIA_EXAMPLES = [
   "Select papers with a minimum sample size of 100 patients"
 ];
 
+// Add these styled components after the existing styled components
+const ScrollableContainer = styled.div`
+  overflow-y: auto;
+  max-height: calc(100vh - 240px); // Increased height to extend to bottom
+  padding-right: 8px; // Add padding to prevent content overlap with scrollbar
+  margin-right: -8px; // Compensate for padding
+
+  /* Custom scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #F5F5F5;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #C2E2EB;
+    border-radius: 10px;
+    border: 2px solid #F5F5F5;
+    
+    &:hover {
+      background: #62B6CB;
+    }
+  }
+
+  /* Firefox scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #C2E2EB #F5F5F5;
+`;
+
 const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updateAnalysisData, savedQueries }) => {
   const [newCriterion, setNewCriterion] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -399,10 +432,10 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
       </div>
 
       {/* Right Panel */}
-      <div className="w-2/3 p-6">
+      <div className="w-2/3 p-6 flex flex-col h-full"> {/* Added flex and h-full */}
         {/* Active Criteria */}
         {analysisData.criteria.length > 0 && (
-          <div className="mb-6">
+          <div className="flex-shrink-0 mb-6"> {/* Added flex-shrink-0 */}
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold text-gray-700">Active Criteria:</h3>
               <button
@@ -416,8 +449,8 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
             </div>
             <div className="space-y-2">
               {analysisData.criteria.map((criterion) => (
-                <div key={criterion.id} className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
-                  <span className="text-sm font-medium text-[#62B6CB]">
+                <div key={criterion.id} className="flex items-center justify-between gap-4 p-2 rounded-md">
+                  <span className="p-3 border border-[#62B6CB] rounded-md hover:bg-[#C2E2EB] text-left w-full transition-colors group">
                     Criteria {criterion.id}: {criterion.description}
                   </span>
                   <button
@@ -432,42 +465,44 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
           </div>
         )}
 
-        {/* Modified Filters and Export section - only visible when query is selected */}
+        {/* Filters and Export */}
         {analysisData.selectedQuery && (
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className="bg-white text-black px-3 py-1 rounded-md border border-[#D6D6D6] shadow hover:bg-gray-50 flex items-center"
-              >
-                <FaFilter className="mr-2" />
-                Filters
-              </button>
-              {analysisCompleted && (
+          <div className="flex-shrink-0 mb-4"> {/* Added flex-shrink-0 */}
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center space-x-2">
                 <button
-                  onClick={() => setShowOnlyFullMatch(!showOnlyFullMatch)}
-                  className={`px-3 py-1 rounded-md flex items-center ${
-                    showOnlyFullMatch ? 'bg-[#62B6CB] text-white' : 'bg-white text-[#62B6CB] border border-[#62B6CB]'
-                  }`}
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="bg-white text-black px-3 py-1 rounded-md border border-[#D6D6D6] shadow hover:bg-gray-50 flex items-center"
                 >
-                  <FaCheckDouble className="mr-2" />
-                  Show 100% match only
+                  <FaFilter className="mr-2" />
+                  Filters
                 </button>
-              )}
+                {analysisCompleted && (
+                  <button
+                    onClick={() => setShowOnlyFullMatch(!showOnlyFullMatch)}
+                    className={`px-3 py-1 rounded-md flex items-center ${
+                      showOnlyFullMatch ? 'bg-[#62B6CB] text-white' : 'bg-white text-[#62B6CB] border border-[#62B6CB]'
+                    }`}
+                  >
+                    <FaCheckDouble className="mr-2" />
+                    Show 100% match only
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={handleExport}
+                className="bg-[#62B6CB] text-white px-3 py-1 rounded-md hover:bg-[#62B6CB] flex items-center"
+              >
+                <FaDownload className="mr-2" />
+                Export
+              </button>
             </div>
-            <button
-              onClick={handleExport}
-              className="bg-[#62B6CB] text-white px-3 py-1 rounded-md hover:bg-[#62B6CB] flex items-center"
-            >
-              <FaDownload className="mr-2" />
-              Export
-            </button>
           </div>
         )}
 
         {/* Filters Popup */}
         {showFilters && (
-          <div className="mb-4 p-4 bg-white rounded-md shadow-lg border border-gray-200">
+          <div className="flex-shrink-0 mb-4"> {/* Added flex-shrink-0 */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">Keyword</label>
               <input
@@ -511,8 +546,8 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
           </div>
         )}
 
-        {/* Documents List */}
-        <div className="overflow-y-auto max-h-[calc(100vh-300px)]">
+        {/* Documents List - Now wrapped in ScrollableContainer */}
+        <ScrollableContainer className="flex-grow">
           {filteredDocuments.map(doc => (
             <div key={doc.id} className="border p-4 mb-4 rounded-md">
               <div className="flex">
@@ -621,7 +656,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
               </div>
             </div>
           ))}
-        </div>
+        </ScrollableContainer>
       </div>
     </div>
   );
