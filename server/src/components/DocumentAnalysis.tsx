@@ -77,7 +77,7 @@ const Track = (props: any, state: any) => <StyledTrack {...props} index={state.i
 
 const StudyTypeTag: React.FC<{ type: string }> = ({ type }) => {
   return (
-    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#E3F9FD] text-black">
       {type === 'rct' ? 'RCT' : type.charAt(0).toUpperCase() + type.slice(1)}
     </span>
   );
@@ -86,7 +86,7 @@ const StudyTypeTag: React.FC<{ type: string }> = ({ type }) => {
 const AuthorsTag: React.FC<{ authors: string[] }> = ({ authors }) => {
   const displayAuthors = authors.length > 2 ? `${authors[0]} et al.` : authors.join(', ');
   return (
-    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 ml-2">
+    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#EDFAF1] text-black">
       <FaUsers className="mr-1" />
       {displayAuthors}
     </span>
@@ -96,7 +96,7 @@ const AuthorsTag: React.FC<{ authors: string[] }> = ({ authors }) => {
 const YearTag: React.FC<{ date: string }> = ({ date }) => {
   const year = new Date(date).getFullYear();
   return (
-    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 mr-2">
+    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#F4EDFC] text-black">
       <FaCalendarAlt className="mr-1" />
       {year}
     </span>
@@ -322,13 +322,21 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
     }
   };
 
+  // Add new handler for Enter key press
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && newCriterion.trim()) {
+      handleAddCriterion();
+    }
+  };
+
   return (
     <div className="flex h-full">
       {/* Left Panel */}
       <div className="w-1/3 p-6 border-r border-gray-200">
+        <h1 className="text-2xl font-bold mb-6 text-black">Abstract screening</h1>
         {/* Query Selector */}
         <select
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 mb-6"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#62B6CB] mb-6"
           onChange={handleQueryChange}
           value={analysisData.selectedQuery?.id || ''}
         >
@@ -342,12 +350,12 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
 
         {/* Tooltip */}
         {showTooltip && (
-          <div className="mb-6 bg-gray-50 p-4 rounded-md">
+          <div className="mb-6 rounded-md ">
             <div className="flex justify-between items-start mb-2">
               <h3 className="font-semibold text-gray-700">Criteria definition:</h3>
               <button
                 onClick={() => setShowTooltip(false)}
-                className="text-teal-600 text-sm underline hover:text-teal-700"
+                className="text-[#62B6CB] text-sm underline hover:text-gray-500"
               >
                 Hide
               </button>
@@ -360,21 +368,18 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
           </div>
         )}
 
-        {/* Criteria Input */}
+        {/* Modified Criteria Input - removed button */}
         <div className="mb-6">
-          <input
-            type="text"
-            value={newCriterion}
-            onChange={(e) => setNewCriterion(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-            placeholder="Enter new criterion in natural language..."
-          />
-          <button
-            onClick={handleAddCriterion}
-            className="mt-2 w-full bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 transition-colors duration-200 flex items-center justify-center"
-          >
-            <FaPlus className="mr-2" /> Add Criterion
-          </button>
+          <div className="w-full rounded-2xl border-4 border-[#C2E2EB]">
+            <input
+              type="text"
+              value={newCriterion}
+              onChange={(e) => setNewCriterion(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="w-full px-3 py-2 rounded-xl border-2 border-[#62B6CB] shadow focus:outline-none focus:ring-2"
+              placeholder="Enter new criterion in natural language... (press Enter to add)"
+            />
+          </div>
         </div>
 
         {/* Criteria Examples */}
@@ -403,7 +408,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
               <button
                 onClick={handleAnalyzeDocuments}
                 disabled={isAnalyzing}
-                className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 disabled:bg-gray-300 flex items-center"
+                className="bg-[#62B6CB] text-white px-4 py-2 rounded-md hover:bg-[#62B6CB] disabled:bg-gray-300 flex items-center"
               >
                 <FaMagic className="mr-2" />
                 {isAnalyzing ? 'Analyzing...' : 'Analyze Corpus'}
@@ -427,36 +432,38 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
           </div>
         )}
 
-        {/* Filters and Export */}
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="bg-teal-500 text-white px-3 py-1 rounded-md hover:bg-teal-600 flex items-center"
-            >
-              <FaFilter className="mr-2" />
-              Filters
-            </button>
-            {analysisCompleted && (
+        {/* Modified Filters and Export section - only visible when query is selected */}
+        {analysisData.selectedQuery && (
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center space-x-2">
               <button
-                onClick={() => setShowOnlyFullMatch(!showOnlyFullMatch)}
-                className={`px-3 py-1 rounded-md flex items-center ${
-                  showOnlyFullMatch ? 'bg-teal-600 text-white' : 'bg-white text-teal-600 border border-teal-600'
-                }`}
+                onClick={() => setShowFilters(!showFilters)}
+                className="bg-white text-black px-3 py-1 rounded-md border border-[#D6D6D6] shadow hover:bg-gray-50 flex items-center"
               >
-                <FaCheckDouble className="mr-2" />
-                Show 100% match only
+                <FaFilter className="mr-2" />
+                Filters
               </button>
-            )}
+              {analysisCompleted && (
+                <button
+                  onClick={() => setShowOnlyFullMatch(!showOnlyFullMatch)}
+                  className={`px-3 py-1 rounded-md flex items-center ${
+                    showOnlyFullMatch ? 'bg-[#62B6CB] text-white' : 'bg-white text-[#62B6CB] border border-[#62B6CB]'
+                  }`}
+                >
+                  <FaCheckDouble className="mr-2" />
+                  Show 100% match only
+                </button>
+              )}
+            </div>
+            <button
+              onClick={handleExport}
+              className="bg-[#62B6CB] text-white px-3 py-1 rounded-md hover:bg-[#62B6CB] flex items-center"
+            >
+              <FaDownload className="mr-2" />
+              Export
+            </button>
           </div>
-          <button
-            onClick={handleExport}
-            className="bg-teal-500 text-white px-3 py-1 rounded-md hover:bg-teal-600 flex items-center"
-          >
-            <FaDownload className="mr-2" />
-            Export
-          </button>
-        </div>
+        )}
 
         {/* Filters Popup */}
         {showFilters && (
@@ -526,7 +533,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                     </h4>
                   </div>
                   
-                  <div className="text-sm mb-2">
+                  <div className="text-sm mb-2 text-gray-500">
                     <p>
                       {doc.abstractExpanded 
                         ? doc.abstract 
@@ -543,7 +550,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                   </div>
                   
                   {doc.pico.expanded && (
-                    <div className="mt-2 bg-[#BDBDBD] p-3 rounded">
+                    <div className="mt-2 bg-white p-3 rounded border border-[#62B6CB] ">
                       <h5 className="font-semibold mb-2">PICO Information</h5>
                       <ul className="list-disc pl-5">
                         <li><strong>Population:</strong> {doc.pico.population}</li>
@@ -553,15 +560,10 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                       </ul>
                     </div>
                   )}
-                  
-                  <div className="flex items-center mt-2 text-xs text-gray-500">
+                  <div className="flex items-center gap-3 mt-4 text-xs text-gray-500">
                     <YearTag date={doc.date} />
                     <StudyTypeTag type={doc.studyType} />
                     <AuthorsTag authors={doc.authors} />
-                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#62B6CB] text-[#62B6CB]">
-                      <FaQuoteLeft className="mr-1" />
-                      {doc.citationCount} citations
-                    </span>
                   </div>
                 </div>
 

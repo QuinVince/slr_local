@@ -83,7 +83,7 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries }) =
 
   return (
     <div className="flex flex-col items-center justify-center">
-    <div className="w-5/6 p-6">
+    <div className="w-7/8 p-6">
       <h1 className="text-2xl font-bold text-black mb-6 text-center">Duplicate analysis</h1>
       
       <div className="flex items-start space-x-6 mb-8">

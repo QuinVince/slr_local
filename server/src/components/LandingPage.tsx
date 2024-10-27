@@ -105,9 +105,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
       handleDescriptionSubmit();
     }
   };
-
   return (
-    <div className="container mx-auto px-6 pt-16">
+    <div className="w-4/5 p-6container mx-auto px-6 pt-16">
       {!showQueryGenerator && !showComponent && (
         <>
           <h2 className="text-center text-black text-2xl font-bold mb-10">
@@ -115,14 +114,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
           </h2>
 
           {activeComponent === 'query' && (
-            <div className="relative mb-12">
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="w-full h-14 rounded-2xl border-2 border-[#62B6CB] shadow text-lg pl-5 pr-16"
-                placeholder="Décrivez votre recherche en langage naturel"
-              />
+            <div className="flex items-center relative mb-8">
+              <div className="w-full rounded-2xl border-4 border-[#C2E2EB]">
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="w-full h-14 rounded-xl  border-2 border-[#62B6CB] shadow text-lg pl-5 pr-16 flex items-center"
+                  placeholder="Décrivez votre recherche en langage naturel"
+                  style={{paddingTop: '14px'}} 
+                />
+              </div>
               <button
                 onClick={handleDescriptionSubmit}
                 className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#C2E2EB] rounded-full flex items-center justify-center"
@@ -132,10 +134,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-8">
             <button
               onClick={() => handleNavigation('query')}
-              className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
+              className={`h-20 w-11/12 mx-auto rounded-2xl text-base font-bold flex items-center justify-center ${
                 activeComponent === 'query'
                   ? 'bg-[#62B6CB] text-white hover:opacity-90'
                   : 'border border-[#BDBDBD] text-black hover:bg-[#C2E2EB]'
@@ -147,7 +149,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
 
             <button
               onClick={() => handleNavigation('duplicate')}
-              className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
+              className={`h-20 w-11/12 mx-auto rounded-2xl text-base font-bold flex items-center justify-center ${
                 activeComponent === 'duplicate'
                   ? 'bg-[#62B6CB] text-white hover:opacity-90'
                   : 'border border-[#BDBDBD] text-black hover:bg-[#C2E2EB]'
@@ -159,7 +161,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
 
             <button
               onClick={() => handleNavigation('document')}
-              className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
+              className={`h-20 w-11/12 mx-auto rounded-2xl text-base font-bold flex items-center justify-center ${
                 activeComponent === 'document'
                   ? 'bg-[#62B6CB] text-white hover:opacity-90'
                   : 'border border-[#BDBDBD] text-black hover:bg-[#C2E2EB]'
@@ -171,7 +173,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
 
             <button
               onClick={() => handleNavigation('diagram')}
-              className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
+              className={`h-20 w-11/12 mx-auto rounded-2xl text-base font-bold flex items-center justify-center ${
                 activeComponent === 'diagram'
                   ? 'bg-[#62B6CB] text-white hover:opacity-90'
                   : 'border border-[#BDBDBD] text-black hover:bg-[#C2E2EB]'
@@ -183,7 +185,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
           </div>
 
           {savedQueries.length > 0 && (
-            <div className="bg-white rounded-2xl border-2 border-[#D6D6D6] p-6">
+            <div className="bg-white rounded-2xl p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold text-black">Saved Queries</h2>
                 <button
