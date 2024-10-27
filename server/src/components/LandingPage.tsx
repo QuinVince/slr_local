@@ -120,9 +120,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="w-full h-14 rounded-2xl border-2 border-[#62B6CB] shadow text-lg pl-5 pr-16 flex items-center"
+                className="w-full h-14 rounded-2xl border-2 border-[#62B6CB] shadow text-lg pl-5 pr-16"
                 placeholder="Décrivez votre recherche en langage naturel"
-                style={{ paddingTop: 'calc(0.5rem + (14px - 1.125em) / 2)' }}
               />
               <button
                 onClick={handleDescriptionSubmit}

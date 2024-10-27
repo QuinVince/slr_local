@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaFileAlt, FaToggleOn, FaToggleOff, FaChevronDown, FaTrash, FaTimes } from 'react-icons/fa';
+import { FaFileAlt, FaToggleOn, FaToggleOff, FaChevronDown, FaTrash, FaTimes, FaEye } from 'react-icons/fa';
 import { DuplicatePair } from './DuplicateAnalysis';
 
 interface DuplicateAnalysisTableProps {
@@ -32,58 +32,59 @@ const DuplicateAnalysisTable: React.FC<DuplicateAnalysisTableProps> = ({
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-[#62B6CB]">Duplicate Comparison</h2>
-        <div className="flex space-x-2">
-          <button
-            onClick={onSelectAllPairs}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#62B6CB] hover:bg-[#62B6CB]"
-          >
-            {selectedPairs.size === duplicatePairs.length ? 'Deselect All' : 'Select All'}
-          </button>
-          <button
-            onClick={onRemoveDuplicates}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-            disabled={selectedPairs.size === 0}
-          >
-            <FaTrash className="mr-2" />
-            Remove Selected Duplicates
-          </button>
-        </div>
+        <h2 className="text-xl font-semibold text-black">Potential duplicates comparison</h2>
+        <button
+          onClick={onRemoveDuplicates}
+          className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-red-600 bg-red-50 hover:bg-red-100"
+          disabled={selectedPairs.size === 0}
+        >
+          Remove selected
+        </button>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full divide-y divide-[#BDBDBD]">
-          <thead className="bg-[#BDBDBD]">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[#BDBDBD] uppercase tracking-wider">Article 1</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[#BDBDBD] uppercase tracking-wider">Article 2</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[#BDBDBD] uppercase tracking-wider">Proximity Score</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[#BDBDBD] uppercase tracking-wider">Action</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[#BDBDBD] uppercase tracking-wider">Selection</th>
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-[#BDBDBD]">
+              <th className="px-4 py-3 text-left text-sm font-medium text-black">Article 1</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-black">Article 2</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-black">Proximity score</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-black">Abstracts</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-black">
+                <input
+                  type="checkbox"
+                  checked={selectedPairs.size === duplicatePairs.length}
+                  onChange={onSelectAllPairs}
+                  className="w-4 h-4 rounded border-[#BDBDBD] text-[#62B6CB] focus:ring-[#62B6CB]"
+                />
+              </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-[#BDBDBD]">
+          <tbody>
             {duplicatePairs.slice(0, displayedPairs).map((pair) => (
-              <tr key={pair.id}>
-                <td className="px-4 py-4 text-sm text-gray-900">{pair.article1.title}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{pair.article2.title}</td>
-                <td className="px-4 py-4 text-sm text-gray-900">{pair.proximityScore.toFixed(2)}</td>
-                <td className="px-4 py-4 text-sm font-medium">
+              <tr key={pair.id} className="border-b border-[#BDBDBD]">
+                <td className="px-4 py-4 text-sm text-black">{pair.article1.title}</td>
+                <td className="px-4 py-4 text-sm text-black">{pair.article2.title}</td>
+                <td className="px-4 py-4">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium bg-[#62B6CB] text-white">
+                    {pair.proximityScore.toFixed(1)}
+                  </span>
+                </td>
+                <td className="px-4 py-4">
                   <button
                     onClick={() => onCheckAbstracts(pair.id)}
-                    className="text-[#62B6CB] hover:text-[#62B6CB] flex items-center"
+                    className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#62B6CB] text-white hover:bg-[#62B6CB]/90"
                   >
-                    <FaFileAlt className="mr-2" />
-                    Check Abstracts
+                    <FaEye className="w-4 h-4" />
                   </button>
                 </td>
-                <td className="px-4 py-4 text-sm font-medium">
-                  <button
-                    onClick={() => onTogglePair(pair.id)}
-                    className="text-[#62B6CB] hover:text-[#62B6CB]"
-                  >
-                    {selectedPairs.has(pair.id) ? <FaToggleOn size={20} /> : <FaToggleOff size={20} />}
-                  </button>
+                <td className="px-4 py-4">
+                  <input
+                    type="checkbox"
+                    checked={selectedPairs.has(pair.id)}
+                    onChange={() => onTogglePair(pair.id)}
+                    className="w-4 h-4 rounded border-[#BDBDBD] text-[#62B6CB] focus:ring-[#62B6CB]"
+                  />
                 </td>
               </tr>
             ))}
@@ -107,7 +108,7 @@ const DuplicateAnalysisTable: React.FC<DuplicateAnalysisTableProps> = ({
   );
 };
 
-// Fix the Modal component by adding the return statement
+// Update Modal styling
 const Modal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
@@ -116,20 +117,20 @@ const Modal: React.FC<{
   if (!isOpen || !pair) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-4/5 shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-black/50 overflow-y-auto h-full w-full z-50">
+      <div className="relative top-20 mx-auto p-5 border w-4/5 shadow-lg rounded-lg bg-white">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-[#62B6CB]">Abstract Comparison</h3>
+          <h3 className="text-lg font-semibold text-black">Abstract Comparison</h3>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <FaTimes />
           </button>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <div>
+          <div className="p-4 bg-gray-50 rounded-lg">
             <h4 className="font-semibold mb-2">{pair.article1.title}</h4>
             <p className="text-sm">{pair.article1.abstract}</p>
           </div>
-          <div>
+          <div className="p-4 bg-gray-50 rounded-lg">
             <h4 className="font-semibold mb-2">{pair.article2.title}</h4>
             <p className="text-sm">{pair.article2.abstract}</p>
           </div>
