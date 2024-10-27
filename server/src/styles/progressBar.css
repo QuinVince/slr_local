@@ -1,0 +1,78 @@
+/* Progress Bar Container */
+.RSPBprogressBar {
+  height: 4px;
+  width: 100%;
+  background-color: #BDBDBD;
+  position: relative;
+}
+
+/* Progress Bar Fill */
+.RSPBprogressBar .RSPBprogression {
+  background: #62B6CB;
+  transition: width 0.3s ease;
+}
+
+/* Step Container */
+.RSPBstep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 0;
+}
+
+/* Step Circle */
+.RSPBstep .step-circle {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid;
+  position: relative;
+  z-index: 10;
+  margin-top: -6px;
+  transition: all 0.3s ease;
+}
+
+/* Step Circle - Not Accomplished */
+.RSPBstep .step-circle.not-accomplished {
+  border-color: #BDBDBD;
+  background: white;
+}
+
+/* Step Circle - Accomplished */
+.RSPBstep .step-circle.accomplished {
+  border-color: #62B6CB;
+  background: #62B6CB;
+}
+
+/* Step Circle - Current */
+.RSPBstep .step-circle.current {
+  border-color: #62B6CB;
+}
+
+/* Step Text */
+.RSPBstep .step-text {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  transition: color 0.3s ease;
+}
+
+/* Step Text - Not Accomplished */
+.RSPBstep .step-text.not-accomplished {
+  color: #BDBDBD;
+}
+
+/* Step Text - Accomplished */
+.RSPBstep .step-text.accomplished {
+  color: #62B6CB;
+}
+
+/* Checkmark Icon */
+.RSPBstep .checkmark {
+  width: 8px;
+  height: 8px;
+  color: white;
+}

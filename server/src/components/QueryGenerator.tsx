@@ -5,6 +5,9 @@ import { FaSearch, FaArrowRight, FaCheck, FaList, FaDownload, FaFileAlt, FaTrash
 import { SavedQuery } from '../App'; // Import the SavedQuery interface from App
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { ProgressBar, Step } from "react-step-progress-bar";
+import "react-step-progress-bar/styles.css";
+import '../styles/progressBar.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -53,11 +56,26 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
 
   // Add this at the beginning of the component
   const steps = [
-    { id: 0, name: 'Nouvelle query' },  // Changed from 1 to 0
-    { id: 1, name: 'Questions' },       // Changed from 2 to 1
-    { id: 2, name: 'Pubmed query' },    // Changed from 3 to 2
-    { id: 3, name: 'Sauvegarde' }       // Changed from 4 to 3
+    { id: 0, name: 'Nouvelle query' },
+    { id: 1, name: 'Questions' },
+    { id: 2, name: 'Pubmed query' },
+    { id: 3, name: 'Sauvegarde' }
   ];
+
+  const getProgressWidth = () => {
+    switch(step) {
+      case 0: return '33%';
+      case 1: return '66%';
+      case 2: return '100%';
+      default: return '0%';
+    }
+  };
+
+  const getStepStatus = (stepId: number) => {
+    if (stepId < step) return 'accomplished';
+    if (stepId === step) return 'current';
+    return '';
+  };
 
   useEffect(() => {
     if (initialData?.description) {
@@ -438,8 +456,8 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
   };
 
   return (
-    <div className="p-4"> {/* Reduced padding */}
-      <div className="flex items-center mb-4"> {/* Reduced margin */}
+    <div className="p-4">
+      <div className="flex items-center mb-4">
         <button
           onClick={handleReturn}
           className="text-[#62B6CB] hover:text-[#62B6CB] p-2 rounded-full hover:bg-[#62B6CB] transition-colors"
@@ -450,47 +468,34 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
           </svg>
         </button>
         
-        <div className="ml-8 w-8/12">
-          <div className="flex justify-between items-center">
-            {steps.map((stepItem, index) => (
-              <div key={stepItem.id} className="flex-1 relative">
-                {index > 0 && (
+        {/* Updated progress bar container */}
+        <div className="ml-8 flex-grow">
+          <div className="progress-container">
+            <div className="progress-line"></div>
+            <div 
+              className="progress-line-fill"
+              style={{ width: getProgressWidth() }}
+            ></div>
+            <div className="flex justify-between w-full relative">
+              {steps.map((stepItem) => (
+                <div key={stepItem.id} className="step-wrapper">
                   <div 
-                    className={`absolute w-full h-0.5 top-1/2 -left-1/2 transform -translate-y-1/2 ${
-                      step > index ? 'bg-[#62B6CB]' : 'bg-[#BDBDBD]'
-                    }`}
-                  />
-                )}
-                <div className="relative flex flex-col items-center">
-                  <div 
-                    className={`w-6 h-6 rounded-full border-3 flex items-center justify-center relative z-10 
-                      ${
-                        stepItem.id === 0 ? 'border-[#62B6CB] bg-[#62B6CB]' : 
-                        stepItem.id === 1 ? (step > 0 ? 'border-[#62B6CB] bg-[#62B6CB]' : 'border-[#62B6CB] bg-[#BDBDBD]') :
-                        stepItem.id === 2 ? (step > 1 ? 'border-[#62B6CB] bg-[#62B6CB]' : 'border-[#62B6CB] bg-[#BDBDBD]') :
-                        stepItem.id === 3 ? (step === 3 ? 'border-[#62B6CB] bg-[#BDBDBD]' : 'border-[#BDBDBD] bg-[#BDBDBD]') :
-                        'border-[#BDBDBD] bg-[#BDBDBD]'
-                      }`}
+                    className={`step ${getStepStatus(stepItem.id)}`}
                   >
-                    {step > stepItem.id && stepItem.id !== 0 && (
-                      <svg className="w-3 h-3 text-[#62B6CB]" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                    {stepItem.id === 0 && (
-                      <svg className="w-3 h-3 text-[#62B6CB]" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    {getStepStatus(stepItem.id) === 'accomplished' && (
+                      <svg className="checkmark" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     )}
                   </div>
-                  <span 
-                    className={`mt-2 text-[#BDBDBD]`}
-                  >
-                    {stepItem.name}
-                  </span>
+                  <span className="step-label">{stepItem.name}</span>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
