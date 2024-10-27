@@ -412,7 +412,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
             <div className="space-y-2">
               {analysisData.criteria.map((criterion) => (
                 <div key={criterion.id} className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
-                  <span className="text-sm font-medium text-teal-700">
+                  <span className="text-sm font-medium text-[#62B6CB]">
                     Criteria {criterion.id}: {criterion.description}
                   </span>
                   <button
@@ -519,7 +519,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                 <div className="w-8/12 pr-4">
                   <div className="flex items-center justify-between mb-2">
                     <h4 
-                      className="font-semibold cursor-pointer hover:text-teal-500 transition-colors duration-200"
+                      className="font-semibold cursor-pointer hover:text-[#62B6CB] transition-colors duration-200"
                       onClick={() => togglePICO(doc.id)}
                     >
                       {doc.title}
@@ -534,7 +534,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                     </p>
                     {doc.abstract.length > 80 && (
                       <button 
-                        className="text-teal-500 cursor-pointer mt-2"
+                        className="text-[#62B6CB] cursor-pointer mt-2"
                         onClick={() => toggleAbstract(doc.id)}
                       >
                         {doc.abstractExpanded ? 'Show less' : 'Read more'}
@@ -543,7 +543,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                   </div>
                   
                   {doc.pico.expanded && (
-                    <div className="mt-2 bg-gray-100 p-3 rounded">
+                    <div className="mt-2 bg-[#BDBDBD] p-3 rounded">
                       <h5 className="font-semibold mb-2">PICO Information</h5>
                       <ul className="list-disc pl-5">
                         <li><strong>Population:</strong> {doc.pico.population}</li>
@@ -558,7 +558,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                     <YearTag date={doc.date} />
                     <StudyTypeTag type={doc.studyType} />
                     <AuthorsTag authors={doc.authors} />
-                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#62B6CB] text-[#62B6CB]">
                       <FaQuoteLeft className="mr-1" />
                       {doc.citationCount} citations
                     </span>
@@ -572,12 +572,12 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                       {analysisData.criteria.map(criterion => (
                         <div key={criterion.id} className="flex items-center mb-1 relative">
                           <span className="mr-2">Criteria {criterion.id}:</span>
-                          {analysisData.analysisResults[doc.id][criterion.id] === 'Yes' && <FaCheck className="text-green-500" />}
+                          {analysisData.analysisResults[doc.id][criterion.id] === 'Yes' && <FaCheck className="text-[#62B6CB]" />}
                           {analysisData.analysisResults[doc.id][criterion.id] === 'No' && <FaTimes className="text-red-500" />}
                           {analysisData.analysisResults[doc.id][criterion.id] === 'Uncertain' && <FaQuestion className="text-orange-500" />}
                           <div className="relative inline-block ml-2">
                             <button
-                              className="text-teal-500 hover:text-teal-700 focus:outline-none"
+                              className="text-[#62B6CB] hover:text-[#62B6CB] focus:outline-none"
                               onClick={() => handleTooltipClick(doc.id, criterion.id)}
                             >
                               <FaInfoCircle />
@@ -601,8 +601,8 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                     onClick={() => handleIncludeDocument(doc.id)}
                     className={`mt-4 px-3 py-1 rounded-full flex items-center justify-center transition-colors duration-200 ${
                       includedDocuments.includes(doc.id)
-                        ? 'bg-green-500 text-white'
-                        : 'bg-white text-green-500 border border-green-500'
+                        ? 'bg-[#62B6CB] text-white'
+                        : 'bg-white text-[#62B6CB] border border-[#62B6CB]'
                     }`}
                   >
                     {includedDocuments.includes(doc.id) ? (

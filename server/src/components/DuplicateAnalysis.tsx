@@ -83,7 +83,7 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries }) =
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold text-teal-700 mb-6">Duplicate analysis</h1>
+      <h1 className="text-2xl font-bold text-[#62B6CB] mb-6">Duplicate analysis</h1>
       
       <div className="flex items-start space-x-6 mb-8">
         {/* Query Selector */}
@@ -91,7 +91,7 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries }) =
           <select
             value={selectedQuery?.id || ''}
             onChange={handleQuerySelect}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full px-4 py-2 border border-[#BDBDBD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#62B6CB]"
           >
             <option value="">Select a query</option>
             {savedQueries.map(query => (
@@ -104,31 +104,31 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries }) =
 
         {/* Statistics Box */}
         {selectedQuery && (
-          <div className="flex-1 bg-white rounded-lg border border-gray-200 p-4">
+          <div className="flex-1 bg-[#62B6CB] rounded-lg border border-[#BDBDBD] p-4">
             <div className="grid grid-cols-4 gap-4">
               <div className="flex items-center space-x-2">
-                <span className="px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-sm font-medium">
+                <span className="px-3 py-1 rounded-full bg-[#62B6CB] text-white text-sm font-medium">
                   {selectedQuery.collectedDocuments.pubmed}
                 </span>
-                <span className="text-sm text-gray-600">Pubmed papers</span>
+                <span className="text-sm text-[#BDBDBD]">Pubmed papers</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
+                <span className="px-3 py-1 rounded-full bg-[#62B6CB] text-white text-sm font-medium">
                   {selectedQuery.collectedDocuments.semanticScholar}
                 </span>
-                <span className="text-sm text-gray-600">Semantic Scholar Papers</span>
+                <span className="text-sm text-[#BDBDBD]">Semantic Scholar Papers</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-sm font-medium">
+                <span className="px-3 py-1 rounded-full bg-[#62B6CB] text-white text-sm font-medium">
                   138
                 </span>
-                <span className="text-sm text-gray-600">Potential Duplicates</span>
+                <span className="text-sm text-[#BDBDBD]">Potential Duplicates</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">
+                <span className="px-3 py-1 rounded-full bg-[#62B6CB] text-white text-sm font-medium">
                   {removedDuplicates}
                 </span>
-                <span className="text-sm text-gray-600">Removed Duplicates</span>
+                <span className="text-sm text-[#BDBDBD]">Removed Duplicates</span>
               </div>
             </div>
           </div>

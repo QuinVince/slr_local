@@ -120,8 +120,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="w-full h-14 rounded-2xl border-2 border-[#62B6CB] shadow text-lg pl-5 pr-16"
+                className="w-full h-14 rounded-2xl border-2 border-[#62B6CB] shadow text-lg pl-5 pr-16 flex items-center"
                 placeholder="Décrivez votre recherche en langage naturel"
+                style={{ paddingTop: 'calc(0.5rem + (14px - 1.125em) / 2)' }}
               />
               <button
                 onClick={handleDescriptionSubmit}
@@ -138,7 +139,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
               className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
                 activeComponent === 'query'
                   ? 'bg-[#62B6CB] text-white hover:opacity-90'
-                  : 'border-2 border-[#D6D6D6] text-black hover:bg-[#C2E2EB]'
+                  : 'border border-[#BDBDBD] text-black hover:bg-[#C2E2EB]'
               }`}
             >
               <FaSearch className="w-6 h-6 mr-4" />
@@ -150,7 +151,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
               className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
                 activeComponent === 'duplicate'
                   ? 'bg-[#62B6CB] text-white hover:opacity-90'
-                  : 'border-2 border-[#D6D6D6] text-black hover:bg-[#C2E2EB]'
+                  : 'border border-[#BDBDBD] text-black hover:bg-[#C2E2EB]'
               }`}
             >
               <FaExchangeAlt className="w-6 h-6 mr-4" />
@@ -162,7 +163,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
               className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
                 activeComponent === 'document'
                   ? 'bg-[#62B6CB] text-white hover:opacity-90'
-                  : 'border-2 border-[#D6D6D6] text-black hover:bg-[#C2E2EB]'
+                  : 'border border-[#BDBDBD] text-black hover:bg-[#C2E2EB]'
               }`}
             >
               <FaFileAlt className="w-6 h-6 mr-4" />
@@ -174,7 +175,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
               className={`h-20 rounded-2xl text-base font-bold flex items-center justify-center ${
                 activeComponent === 'diagram'
                   ? 'bg-[#62B6CB] text-white hover:opacity-90'
-                  : 'border-2 border-[#D6D6D6] text-black hover:bg-[#C2E2EB]'
+                  : 'border border-[#BDBDBD] text-black hover:bg-[#C2E2EB]'
               }`}
             >
               <FaProjectDiagram className="w-6 h-6 mr-4" />
@@ -226,20 +227,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
                             </div>
                           </div>
                           <div className="w-1/2 pl-4 border-l border-teal-200">
-                            <h4 className="text-lg font-semibold mb-4 text-teal-700">Query Statistics</h4>
+                            <h4 className="text-lg font-semibold mb-4 text-[#62B6CB]">Query Statistics</h4>
                             <div className="grid grid-cols-2 gap-4 mb-6">
-                              <div className="bg-teal-100 p-4 rounded-lg flex items-center">
-                                <FaFileAlt className="text-teal-600 text-2xl mr-3" />
+                              <div className="bg-[#C2E2EB] p-4 rounded-lg flex items-center">
+                                <FaFileAlt className="text-[#62B6CB] text-2xl mr-3" />
                                 <div>
-                                  <p className="text-sm text-teal-600">Total Papers</p>
-                                  <p className="text-2xl font-bold text-teal-800">{query.paperCount}</p>
+                                  <p className="text-sm text-[#62B6CB]">Total Papers</p>
+                                  <p className="text-2xl font-bold text-[#62B6CB]">{query.paperCount}</p>
                                 </div>
                               </div>
-                              <div className="bg-teal-100 p-4 rounded-lg flex items-center">
-                                <FaUnlock className="text-teal-600 text-2xl mr-3" />
+                              <div className="bg-[#C2E2EB] p-4 rounded-lg flex items-center">
+                                <FaUnlock className="text-[#62B6CB] text-2xl mr-3" />
                                 <div>
-                                  <p className="text-sm text-teal-600">Free Full Text</p>
-                                  <p className="text-2xl font-bold text-teal-800">{query.freeFullTextCount}</p>
+                                  <p className="text-sm text-[#62B6CB]">Free Full Text</p>
+                                  <p className="text-2xl font-bold text-[#62B6CB]">{query.freeFullTextCount}</p>
                                 </div>
                               </div>
                             </div>
@@ -249,10 +250,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
                                 <span>{query.collectedDocuments.pubmed + query.collectedDocuments.semanticScholar} docs</span>
                               </div>
                               <div className="flex space-x-2">
-                                <span className="bg-teal-600 text-white rounded-full px-2 py-1">
+                                <span className="bg-[#62B6CB] text-white rounded-full px-2 py-1">
                                   PubMed: {query.collectedDocuments.pubmed}
                                 </span>
-                                <span className="bg-teal-600 text-white rounded-full px-2 py-1">
+                                <span className="bg-[#62B6CB] text-white rounded-full px-2 py-1">
                                   Semantic Scholar: {query.collectedDocuments.semanticScholar}
                                 </span>
                               </div>

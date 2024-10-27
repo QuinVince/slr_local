@@ -272,10 +272,10 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
       case 0:  // Changed from case 1
         return (
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-teal-700">Generated Questions</h2>
+            <h2 className="text-xl font-semibold mb-4 text-[#62B6CB]">Generated Questions</h2>
             {isGeneratingQuestions ? (
               <div className="text-center py-4 flex items-center justify-center">
-                <svg className="animate-spin h-5 w-5 mr-3 text-teal-500" viewBox="0 0 24 24">
+                <svg className="animate-spin h-5 w-5 mr-3 text-[#62B6CB]" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
@@ -291,14 +291,14 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                       value={answers[question] || ''}
                       onChange={(e) => handleAnswerChange(question, e.target.value)}
                       onKeyPress={(e) => handleAnswerKeyPress(e, index === questions.length - 1)}
-                      className="w-full px-3 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full px-3 py-2 border border-[#BDBDBD] rounded-md focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
                       placeholder="Your answer..."
                     />
                   </div>
                 ))}
                 <button
                   onClick={handleNextStep}
-                  className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center justify-center"
+                  className="mt-4 px-4 py-2 bg-[#62B6CB] text-white rounded-md hover:bg-[#62B6CB] focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
                   disabled={isGeneratingPubMed}
                 >
                   {isGeneratingPubMed ? (
@@ -322,10 +322,10 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
       case 1:  // Changed from case 2
         return (
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-teal-700">PubMed Query and Synonyms</h2>
+            <h2 className="text-xl font-semibold mb-4 text-black">PubMed Query and Synonyms</h2>
             {isGeneratingPubMed ? (
               <div className="text-center py-4 flex items-center justify-center">
-                <svg className="animate-spin h-5 w-5 mr-3 text-teal-500" viewBox="0 0 24 24">
+                <svg className="animate-spin h-5 w-5 mr-3 text-[#62B6CB]" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
@@ -334,16 +334,16 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
             ) : (
               <div className="flex flex-col gap-4">
                 <div className="w-full">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Generated PubMed Query</label>
+                  <label className="block text-sm font-medium text-[#62B6CB] mb-2">Generated PubMed Query</label>
                   <textarea
                     value={pubMedQuery}
                     onChange={(e) => setPubMedQuery(e.target.value)}
-                    className="w-full px-3 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-3 py-2 border border-[#BDBDBD] rounded-md focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
                     rows={5}
                     placeholder="Generated PubMed query..."
                   />
                   {estimatedDocuments !== null && (
-                    <p className="mt-2 text-teal-700">
+                    <p className="mt-2 text-[#62B6CB]">
                       Estimated number of documents: <span className="font-bold">{estimatedDocuments}</span>
                     </p>
                   )}
@@ -351,7 +351,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                 
                 {isGeneratingSynonyms ? (
                   <div className="text-center py-4 flex items-center justify-center">
-                    <svg className="animate-spin h-5 w-5 mr-3 text-teal-500" viewBox="0 0 24 24">
+                    <svg className="animate-spin h-5 w-5 mr-3 text-[#62B6CB]" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
@@ -373,7 +373,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                 <div className="mt-4">
                   <button
                     onClick={handleCollectDocuments}
-                    className={`w-full px-4 py-2 ${isCollected ? 'bg-teal-700' : 'bg-teal-500'} text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center justify-center`}
+                    className={`w-full px-4 py-2 ${isCollected ? 'bg-[#62B6CB]' : 'bg-[#62B6CB]'} text-white rounded-md hover:bg-[#62B6CB] focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center`}
                     disabled={isCollecting || isCollected}
                   >
                     {isCollecting ? 'Collecting...' : isCollected ? 'Documents Collected' : 'Collect Documents'}
@@ -382,12 +382,12 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
 
                   {isCollecting && (
                     <div className="mt-4">
-                      <p className="text-teal-700">
+                      <p className="text-[#62B6CB]">
                         Collecting documents: {collectedDocuments.pubmed + collectedDocuments.semanticScholar} / {totalDocuments}
                       </p>
-                      <div className="w-full bg-teal-200 rounded-full h-2.5 mt-2">
+                      <div className="w-full bg-[#BDBDBD] rounded-full h-2.5 mt-2">
                         <div 
-                          className="bg-teal-600 h-2.5 rounded-full transition-all duration-200" 
+                          className="bg-[#62B6CB] h-2.5 rounded-full transition-all duration-200" 
                           style={{ width: `${((collectedDocuments.pubmed + collectedDocuments.semanticScholar) / totalDocuments) * 100}%` }}
                         ></div>
                       </div>
@@ -396,12 +396,12 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
 
                   {isCollected && (
                     <div className="mt-4">
-                      <p className="text-teal-700 text-center">
+                      <p className="text-[#62B6CB] text-center">
                         Collection complete! {totalDocuments} documents collected
                       </p>
                       <button
                         onClick={() => setStep(2)}
-                        className="mt-4 w-full px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center justify-center"
+                        className="mt-4 w-full px-4 py-2 bg-[#62B6CB] text-white rounded-md hover:bg-[#62B6CB] focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
                       >
                         Save Query <FaArrowRight className="ml-2" />
                       </button>
@@ -415,18 +415,18 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
       case 2:  // Changed from case 3
         return (
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-teal-700">Save Query</h2>
+            <h2 className="text-xl font-semibold mb-4 text-black">Save Query</h2>
             <input
               type="text"
               value={queryName}
               onChange={(e) => setQueryName(e.target.value)}
               onKeyPress={handleQueryNameKeyPress}
-              className="w-full px-3 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-3 py-2 border border-[#BDBDBD] rounded-md focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
               placeholder="Enter query name"
             />
             <button
               onClick={handleSaveQuery}
-              className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center"
+              className="mt-4 px-4 py-2 bg-[#62B6CB] text-white rounded-md hover:bg-[#62B6CB] focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
             >
               Save Query <FaCheck className="ml-2" />
             </button>
@@ -442,7 +442,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
       <div className="flex items-center mb-4"> {/* Reduced margin */}
         <button
           onClick={handleReturn}
-          className="text-teal-600 hover:text-teal-700 p-2 rounded-full hover:bg-teal-50 transition-colors"
+          className="text-[#62B6CB] hover:text-[#62B6CB] p-2 rounded-full hover:bg-[#62B6CB] transition-colors"
           aria-label="Return"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -457,7 +457,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                 {index > 0 && (
                   <div 
                     className={`absolute w-full h-0.5 top-1/2 -left-1/2 transform -translate-y-1/2 ${
-                      step > index ? 'bg-teal-500' : 'bg-gray-300'
+                      step > index ? 'bg-[#62B6CB]' : 'bg-[#BDBDBD]'
                     }`}
                   />
                 )}
@@ -465,28 +465,26 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                   <div 
                     className={`w-6 h-6 rounded-full border-3 flex items-center justify-center relative z-10 
                       ${
-                        stepItem.id === 0 ? 'border-teal-500 bg-teal-500' : 
-                        stepItem.id === 1 ? (step > 0 ? 'border-teal-500 bg-teal-500' : 'border-teal-500 bg-white') :
-                        stepItem.id === 2 ? (step > 1 ? 'border-teal-500 bg-teal-500' : 'border-teal-500 bg-white') :
-                        stepItem.id === 3 ? (step === 3 ? 'border-teal-500 bg-white' : 'border-gray-300 bg-white') :
-                        'border-gray-300 bg-white'
+                        stepItem.id === 0 ? 'border-[#62B6CB] bg-[#62B6CB]' : 
+                        stepItem.id === 1 ? (step > 0 ? 'border-[#62B6CB] bg-[#62B6CB]' : 'border-[#62B6CB] bg-[#BDBDBD]') :
+                        stepItem.id === 2 ? (step > 1 ? 'border-[#62B6CB] bg-[#62B6CB]' : 'border-[#62B6CB] bg-[#BDBDBD]') :
+                        stepItem.id === 3 ? (step === 3 ? 'border-[#62B6CB] bg-[#BDBDBD]' : 'border-[#BDBDBD] bg-[#BDBDBD]') :
+                        'border-[#BDBDBD] bg-[#BDBDBD]'
                       }`}
                   >
                     {step > stepItem.id && stepItem.id !== 0 && (
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-3 h-3 text-[#62B6CB]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}
                     {stepItem.id === 0 && (
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-3 h-3 text-[#62B6CB]" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}
                   </div>
                   <span 
-                    className={`mt-2 text-xs ${
-                      step >= stepItem.id ? 'text-teal-500 font-medium' : 'text-gray-500'
-                    }`}
+                    className={`mt-2 text-[#BDBDBD]`}
                   >
                     {stepItem.name}
                   </span>
@@ -500,16 +498,16 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
       {/* Update case 0 in renderStep */}
       {step === 0 && (
         <div className="max-w-2xl mx-auto mt-8"> {/* Added max width and center alignment */}
-          <h2 className="text-2xl font-semibold text-center text-teal-700 mb-2">
+          <h2 className="text-2xl font-semibold text-center text-black mb-2">
             Please answer the following questions
           </h2>
-          <p className="text-gray-600 text-center mb-8">
+          <p className="text-[#BDBDBD] text-center mb-8">
             This step will help to generate a relevant PubMed query
           </p>
 
           {isGeneratingQuestions ? (
             <div className="text-center py-4 flex items-center justify-center">
-              <svg className="animate-spin h-5 w-5 mr-3 text-teal-500" viewBox="0 0 24 24">
+              <svg className="animate-spin h-5 w-5 mr-3 text-[#62B6CB]" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
@@ -525,7 +523,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                     value={answers[question] || ''}
                     onChange={(e) => handleAnswerChange(question, e.target.value)}
                     onKeyPress={(e) => handleAnswerKeyPress(e, index === questions.length - 1)}
-                    className="w-full px-4 py-3 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-4 py-3 border border-[#BDBDBD] rounded-md focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
                     placeholder="Your answer..."
                   />
                 </div>
@@ -533,7 +531,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
               <div className="flex justify-center"> {/* Center the button */}
                 <button
                   onClick={handleNextStep}
-                  className="px-6 py-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 flex items-center justify-center"
+                  className="px-6 py-3 bg-[#62B6CB] text-white rounded-md hover:bg-[#62B6CB] focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
                   disabled={isGeneratingPubMed}
                 >
                   {isGeneratingPubMed ? (

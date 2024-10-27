@@ -33,13 +33,13 @@ const SynonymList: React.FC<SynonymListProps> = ({
       {/* Concepts Selection with Dropdown */}
       <div className="flex items-center mb-4">
         <div className="flex items-center w-1/2">
-          <label className="text-sm font-medium text-gray-700 mr-3">
+          <label className="text-sm font-medium text-[#62B6CB] mr-3">
             Select keywords:
           </label>
           <select
             value={selectedConceptIndex}
             onChange={(e) => onConceptSelect(Number(e.target.value))}
-            className="w-full px-3 py-2 border border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full px-3 py-2 border border-[#BDBDBD] rounded-md focus:outline-none focus:ring-2 focus:ring-[#62B6CB]"
           >
             {synonymGroups.map((group, index) => (
               <option key={index} value={index}>
@@ -50,7 +50,7 @@ const SynonymList: React.FC<SynonymListProps> = ({
         </div>
         <button
           onClick={onGetSynonyms}
-          className="ml-3 text-teal-600 hover:text-teal-700 p-2 rounded-full hover:bg-teal-50 transition-colors"
+          className="ml-3 text-[#62B6CB] hover:text-[#62B6CB] p-2 rounded-full hover:bg-[#62B6CB] transition-colors"
           disabled={isSynonymsLoading}
         >
           <FaSync className={`w-4 h-4 ${isSynonymsLoading ? 'animate-spin' : ''}`} />
@@ -64,7 +64,7 @@ const SynonymList: React.FC<SynonymListProps> = ({
             <button
               key={index}
               onClick={() => onSynonymClick(synonym)}
-              className="inline-flex items-center px-3 py-1 rounded-full bg-teal-50 text-teal-700 hover:bg-teal-100 transition-colors"
+              className="inline-flex items-center px-3 py-1 rounded-full bg-[#62B6CB] text-white hover:bg-[#62B6CB] transition-colors"
             >
               <FaPlusCircle className="mr-1" />
               {synonym}
