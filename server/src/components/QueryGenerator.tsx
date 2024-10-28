@@ -56,10 +56,10 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
 
   // Add this at the beginning of the component
   const steps = [
-    { id: 0, name: 'Nouvelle query' },
+    { id: 0, name: 'New query' },
     { id: 1, name: 'Questions' },
     { id: 2, name: 'Pubmed query' },
-    { id: 3, name: 'Sauvegarde' }
+    { id: 3, name: 'Saving' }
   ];
 
   const getProgressWidth = () => {
@@ -72,9 +72,28 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
   };
 
   const getStepStatus = (stepId: number) => {
-    if (stepId < step) return 'accomplished';
-    if (stepId === step) return 'current';
-    return '';
+    // Initial state (step 0): New query accomplished, Questions current
+    if (step === 0) {
+      if (stepId === 0) return 'accomplished';  // "New query" is accomplished
+      if (stepId === 1) return 'current';       // "Questions" is current
+      return '';                                // Other steps are default
+    }
+    
+    // Step 1: New query and Questions accomplished, Pubmed query current
+    if (step === 1) {
+      if (stepId <= 1) return 'accomplished';   // First two steps accomplished
+      if (stepId === 2) return 'current';       // Pubmed query is current
+      return '';                                // Last step is default
+    }
+    
+    // Step 2: All previous accomplished, Saving current
+    if (step === 2) {
+      if (stepId <= 2) return 'accomplished';   // First three steps accomplished
+      if (stepId === 3) return 'current';       // Saving is current
+      return '';
+    }
+    
+    return '';  // Default state
   };
 
   useEffect(() => {
@@ -455,25 +474,29 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
 
   return (
     <div className="p-4">
-      <div className="flex items-center mb-4">
+      {/* Return button moved to top-right */}
+      <div className="flex justify-start mb-6">
         <button
           onClick={handleReturn}
-          className="text-[#62B6CB] hover:text-[#62B6CB] p-2 rounded-full hover:bg-[#62B6CB] transition-colors"
+          className="text-[#62B6CB] hover:text-[#62B6CB] p-2 rounded-full hover:bg-gray-100 transition-colors"
           aria-label="Return"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
         </button>
-        
-        {/* Updated progress bar container */}
-        <div className="ml-8 flex-grow">
-          <div className="progress-container w-[70%] mx-auto">
+      </div>
+
+      {/* Progress bar container with centered alignment and reduced width */}
+      <div className="flex justify-center mb-8">
+        <div className="w-2/3"> {/* Set width to half */}
+          <div className="progress-container">
             <div className="progress-line"></div>
             <div 
               className="progress-line-fill"
               style={{ width: getProgressWidth() }}
             ></div>
+            <div className="steps-container">
             <div className="flex justify-between w-full relative">
               {steps.map((stepItem) => (
                 <div key={stepItem.id} className="step-wrapper">
@@ -490,9 +513,17 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                       </svg>
                     )}
                   </div>
-                  <span className="step-label">{stepItem.name}</span>
+                  <span className={`step-label ${
+                    getStepStatus(stepItem.id) === 'current' 
+                      ? 'font-bold text-[#62B6CB]' 
+                      : 'text-gray-400'
+                  }`}>
+                    {stepItem.name}
+                  </span>
                 </div>
+              
               ))}
+            </div>
             </div>
           </div>
         </div>
@@ -504,7 +535,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
           <h2 className="text-2xl font-semibold text-center text-black mb-2">
             Please answer the following questions
           </h2>
-          <p className="text-[#BDBDBD] text-center mb-8">
+          <p className="text-[#BDBDBD]  text-center mb-8">
             This step will help to generate a relevant PubMed query
           </p>
 

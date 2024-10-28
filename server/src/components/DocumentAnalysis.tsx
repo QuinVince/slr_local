@@ -435,7 +435,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
       <div className="w-2/3 p-6 flex flex-col h-full"> {/* Added flex and h-full */}
         {/* Active Criteria */}
         {analysisData.criteria.length > 0 && (
-          <div className="flex-shrink-0 mb-6 ">
+          <div className="flex-shrink-0 mb-6">
             <h3 className="font-semibold text-gray-700 mb-4">Active Criteria:</h3>
             <div className="space-y-2 mb-4">
               {analysisData.criteria.map((criterion) => (
@@ -453,16 +453,14 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
               ))}
             </div>
             {/* Analyze Corpus button moved here */}
-            <div className="flex justify-center">
-              <button
-                onClick={handleAnalyzeDocuments}
-                disabled={isAnalyzing}
-                className="w-12/3 bg-[#62B6CB] text-white px-4 py-2 rounded-md hover:bg-[#62B6CB] disabled:bg-gray-300 flex items-center justify-center"
-              >
-                <FaMagic className="mr-2" />
-                {isAnalyzing ? 'Analyzing...' : 'Analyze Corpus'}
-              </button>
-            </div>
+            <button
+              onClick={handleAnalyzeDocuments}
+              disabled={isAnalyzing}
+              className="w-full bg-[#62B6CB] text-white px-4 py-2 rounded-md hover:bg-[#62B6CB] disabled:bg-gray-300 flex items-center justify-center"
+            >
+              <FaMagic className="mr-2" />
+              {isAnalyzing ? 'Analyzing...' : 'Analyze Corpus'}
+            </button>
           </div>
         )}
 
