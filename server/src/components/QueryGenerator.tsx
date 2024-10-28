@@ -64,9 +64,9 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
 
   const getProgressWidth = () => {
     switch(step) {
-      case 0: return '33%';
-      case 1: return '66%';
-      case 2: return '100%';
+      case 0: return '27%';
+      case 1: return '54%';
+      case 2: return '81%';
       default: return '0%';
     }
   };

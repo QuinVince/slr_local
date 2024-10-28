@@ -4,7 +4,7 @@
   position: relative;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 0;
+  padding: 20px 10px 20px 10px ;
   margin: 0 0px;
 }
 
@@ -13,11 +13,12 @@
   position: absolute;
   height: 3px; /* Slightly thicker line */
   background-color: #BDBDBD;
-  width: 95%;
+  width: calc(80%);
   top: 50px;
+  bottom: 0;
+  right: 10%;
+  left: 10%;
   align-items: center;
-  left: 20px;
-  right: 0px;
   display: flex;
   justify-content: space-between;
 }
@@ -28,8 +29,9 @@
   background-color: #62B6CB;
   transition: width 0.3s ease;
   top: 50px;
-  width: calc(100% - 15px);
-  left: 7.5px;
+  width: 100%;
+  right: 10%;
+  left: 10%;
 }
 
 /* Step container to handle distribution */
@@ -47,6 +49,7 @@
   display: flex;
   flex-direction: column-reverse;
   align-items: center;
+  width: 20%;
 }
 
 /* Step Styles */
@@ -61,7 +64,7 @@
   justify-content: center;
   transition: all 0.3s ease;
   margin-top: 15px;
-  transform: translate(-50%,-18px); /* Center circle on the line */
+  transform: translatey(-18px); /* Center circle on the line */
 }
 
 .step.accomplished {
