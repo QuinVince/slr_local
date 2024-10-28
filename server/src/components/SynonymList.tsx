@@ -33,13 +33,13 @@ const SynonymList: React.FC<SynonymListProps> = ({
       {/* Concepts Selection with Dropdown */}
       <div className="flex items-center mb-4">
         <div className="flex items-center w-1/2">
-          <label className="text-sm font-medium text-[#62B6CB] mr-3">
+          <label className="text-lg  font-large text-black mr-3 font-bold">
             Select keywords:
           </label>
           <select
             value={selectedConceptIndex}
             onChange={(e) => onConceptSelect(Number(e.target.value))}
-            className="w-full px-3 py-2 border border-[#BDBDBD] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#62B6CB]"
+            className="w-full px-3 py-2 border border-[#BDBDBD] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#62B6CB] border-b-4"
           >
             {synonymGroups.map((group, index) => (
               <option key={index} value={index}>
@@ -50,7 +50,7 @@ const SynonymList: React.FC<SynonymListProps> = ({
         </div>
         <button
           onClick={onGetSynonyms}
-          className="ml-3 text-[#62B6CB] hover:text-[#62B6CB] p-2 rounded-full hover:bg-[#62B6CB] transition-colors"
+          className="ml-3 text-[#62B6CB] hover:text-white p-2 rounded-full hover:bg-[#C2E2EB] transition-colors"
           disabled={isSynonymsLoading}
         >
           <FaSync className={`w-4 h-4 ${isSynonymsLoading ? 'animate-spin' : ''}`} />
@@ -64,9 +64,9 @@ const SynonymList: React.FC<SynonymListProps> = ({
             <button
               key={index}
               onClick={() => onSynonymClick(synonym)}
-              className="inline-flex items-center px-3 py-1 rounded-full bg-[#62B6CB] text-white hover:bg-[#62B6CB] transition-colors"
+              className="inline-flex items-center px-3 py-1 rounded-full bg-[#C2E2EB] text-black hover:bg-[#62B6CB] transition-colors"
             >
-              <FaPlusCircle className="mr-1" />
+              <FaPlusCircle className="mr-1 text-[#62B6CB] bg-white rounded-full" />
               {synonym}
             </button>
           ))}

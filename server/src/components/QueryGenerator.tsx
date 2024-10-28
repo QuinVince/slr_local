@@ -340,7 +340,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
       case 1:  // Changed from case 2
         return (
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-black">PubMed Query and Synonyms</h2>
+            <h2 className="text-2xl font-semibold mb-8 text-black text-center">Generated PubMed Query</h2>
             {isGeneratingPubMed ? (
               <div className="text-center py-4 flex items-center justify-center">
                 <svg className="animate-spin h-5 w-5 mr-3 text-[#62B6CB]" viewBox="0 0 24 24">
@@ -350,13 +350,12 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                 <p>Generating PubMed query...</p>
               </div>
             ) : (
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-8">
                 <div className="w-full">
-                  <label className="block text-sm font-medium text-[#62B6CB] mb-2">Generated PubMed Query</label>
                   <textarea
                     value={pubMedQuery}
                     onChange={(e) => setPubMedQuery(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#BDBDBD] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
+                    className="text-base w-full px-3 py-2 border border-[#BDBDBD] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
                     rows={5}
                     placeholder="Generated PubMed query..."
                   />
@@ -366,7 +365,6 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
                     </p>
                   )}
                 </div>
-                
                 {isGeneratingSynonyms ? (
                   <div className="text-center py-4 flex items-center justify-center">
                     <svg className="animate-spin h-5 w-5 mr-3 text-[#62B6CB]" viewBox="0 0 24 24">
@@ -470,7 +468,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
         
         {/* Updated progress bar container */}
         <div className="ml-8 flex-grow">
-          <div className="progress-container">
+          <div className="progress-container w-[70%] mx-auto">
             <div className="progress-line"></div>
             <div 
               className="progress-line-fill"
