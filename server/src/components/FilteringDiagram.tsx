@@ -105,9 +105,9 @@ const FilteringDiagram: React.FC<FilteringDiagramProps> = ({ initialData }) => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-black flex items-center"> 
-         <FaProjectDiagram className="mr-2" /> PRISMA Flow Diagram
-        </h1>
+      <h1 className="text-2xl font-bold mb-6 text-black text-center">
+        PRISMA Flow Diagram
+      </h1>
       <div className="relative">
         {steps.map((step, index) => (
           <div key={index} className="mb-2 flex items-start">

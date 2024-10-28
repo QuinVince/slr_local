@@ -35,7 +35,7 @@ const DuplicateAnalysisTable: React.FC<DuplicateAnalysisTableProps> = ({
         <h2 className="text-xl font-semibold text-black">Potential duplicates comparison</h2>
         <button
           onClick={onRemoveDuplicates}
-          className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-red-600 bg-red-50 hover:bg-red-100"
+          className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-red-600 bg-red-50 hover:bg-red-100"
           disabled={selectedPairs.size === 0}
         >
           Remove selected
@@ -46,10 +46,10 @@ const DuplicateAnalysisTable: React.FC<DuplicateAnalysisTableProps> = ({
         <table className="w-full">
           <thead>
             <tr className="border-b border-[#BDBDBD]">
-              <th className="px-4 py-3 text-left text-sm font-medium text-black">Article 1</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-black">Article 2</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-black">Proximity score</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-black">Abstracts</th>
+              <th className="px-4 py-3 text-left text-sm font-bold text-black">Article 1</th>
+              <th className="px-4 py-3 text-left text-sm font-bold text-black">Article 2</th>
+              <th className="px-4 py-3 text-left text-sm font-bold text-black">Proximity score</th>
+              <th className="px-4 py-3 text-left text-sm font-bold text-black">Abstracts</th>
               <th className="px-4 py-3 text-left text-sm font-medium text-black">
                 <input
                   type="checkbox"

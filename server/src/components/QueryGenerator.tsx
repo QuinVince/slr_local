@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SynonymList from './SynonymList';
 import axios from 'axios';
 import { FaSearch, FaArrowRight, FaCheck, FaList, FaDownload, FaFileAlt, FaTrash, FaUnlock } from 'react-icons/fa';
+import { HiMiniArrowUturnLeft } from "react-icons/hi2";
 import { SavedQuery } from '../App'; // Import the SavedQuery interface from App
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -475,15 +476,13 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
   return (
     <div className="p-4">
       {/* Return button moved to top-right */}
-      <div className="flex justify-start mb-6">
+      <div className="flex justify-start mb-6 pl-20">
         <button
           onClick={handleReturn}
           className="text-[#62B6CB] hover:text-[#62B6CB] p-2 rounded-full hover:bg-gray-100 transition-colors"
           aria-label="Return"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
+          <HiMiniArrowUturnLeft className="w-6 h-6" />
         </button>
       </div>
 

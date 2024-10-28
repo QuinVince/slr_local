@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { FaSearch, FaExchangeAlt, FaFileAlt, FaProjectDiagram, FaArrowRight, FaChevronDown, FaChevronUp, FaFileAlt as FaFileAltIcon, FaUnlock, FaTrash } from 'react-icons/fa';
+import { FaSearch, FaExchangeAlt, FaFileAlt, FaArrowRight, FaChevronDown, FaChevronUp, FaFileAlt as FaFileAltIcon, FaUnlock, FaTrash } from 'react-icons/fa';
+import {FaDiagramNext} from "react-icons/fa6"
+import { PiStackPlusFill } from "react-icons/pi";
 import QueryGenerator from './QueryGenerator';
 import DuplicateAnalysis from './DuplicateAnalysis';
 import DocumentAnalysis from './DocumentAnalysis';
@@ -143,7 +145,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
                   : 'border border-[#BDBDBD] text-black hover:bg-[#C2E2EB]'
               }`}
             >
-              <FaSearch className="w-6 h-6 mr-4" />
+              <PiStackPlusFill className="w-6 h-6 mr-4" />
               Nouvelle query
             </button>
 
@@ -179,7 +181,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
                   : 'border border-[#BDBDBD] text-black hover:bg-[#C2E2EB]'
               }`}
             >
-              <FaProjectDiagram className="w-6 h-6 mr-4" />
+              <FaDiagramNext className="w-6 h-6 mr-4" />
               PRISM diagram
             </button>
           </div>
@@ -199,7 +201,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
               <div className="space-y-4">
                 {savedQueries.map((query) => (
                   <div key={query.id} className="border-2 border-[#D6D6D6] rounded-xl">
-                    <div className="flex justify-between items-center px-4 py-3 hover:bg-[#C2E2EB]">
+                    <div className="flex justify-between items-center px-4 py-3 hover:bg-[#C2E2EB] rounded-xl">
                       <button
                         onClick={() => toggleQueryExpansion(query.id)}
                         className="flex-1 flex justify-between items-center"
@@ -209,7 +211,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
                       </button>
                       <button
                         onClick={() => onRemoveQuery(query.id)}
-                        className="ml-4 text-red-600 hover:text-red-700 p-1 rounded-full hover:bg-red-50"
+                        className="ml-4 text-red-600 hover:text-red-700 p-1 rounded-full hover:bg-red-50 "
                       >
                         <FaTrash />
                       </button>
@@ -218,43 +220,40 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
                       <div className="p-4 border-t">
                         <div className="flex">
                           <div className="w-1/2 pr-4">
-                            <p className="text-gray-600 mb-2">{query.description}</p>
-                            <div className="bg-gray-100 p-3 rounded-md text-sm text-gray-700 overflow-x-auto mb-3">
+                          <h4 className="text-lg font-semibold mb-4 text-black">Query description</h4>
+                            <p className="text-gray-600 mb-2 font-semibold pb-4">{query.description}</p>
+                            <h4 className="text-lg font-semibold mb-4 text-black">PubMed Query</h4>
+                            <div className="bg p-3 rounded-md border border-[#62B6CB] border-b-4 text-sm text-gray-700 overflow-x-auto mb-3">
                               <code className="whitespace-pre-wrap">{query.pubmedQuery}</code>
                             </div>
-                            <div className="flex justify-between items-center text-sm text-gray-500">
-                              <span>{query.questions.length} questions</span>
-                              <span>{Object.keys(query.answers).length} answers</span>
-                            </div>
+
                           </div>
-                          <div className="w-1/2 pl-4 border-l border-teal-200">
-                            <h4 className="text-lg font-semibold mb-4 text-[#62B6CB]">Query Statistics</h4>
+                          <div className="w-1/2 pl-4 border-l border-[#62B6CB]">
+                            <h4 className="text-lg font-semibold mb-4 text-black">Query Statistics</h4>
                             <div className="grid grid-cols-2 gap-4 mb-6">
-                              <div className="bg-[#C2E2EB] p-4 rounded-lg flex items-center">
-                                <FaFileAlt className="text-[#62B6CB] text-2xl mr-3" />
+                              <div className="bg-[#D5F7FF] p-4 rounded-lg flex items-center">
+                                <FaFileAlt className="text-[#296A7A] text-2xl mr-3" />
                                 <div>
-                                  <p className="text-sm text-[#62B6CB]">Total Papers</p>
-                                  <p className="text-2xl font-bold text-[#62B6CB]">{query.paperCount}</p>
+                                  <p className="text-sm text-[#296A7A]">Total Papers</p>
+                                  <p className="text-2xl font-bold text-[#296A7A]">{query.paperCount}</p>
                                 </div>
                               </div>
-                              <div className="bg-[#C2E2EB] p-4 rounded-lg flex items-center">
-                                <FaUnlock className="text-[#62B6CB] text-2xl mr-3" />
+                              <div className="bg-[#D5F7FF] p-4 rounded-lg flex items-center">
+                                <FaUnlock className="text-[#296A7A] text-2xl mr-3" />
                                 <div>
-                                  <p className="text-sm text-[#62B6CB]">Free Full Text</p>
-                                  <p className="text-2xl font-bold text-[#62B6CB]">{query.freeFullTextCount}</p>
+                                  <p className="text-sm text-[#296A7A]">Free Full Text</p>
+                                  <p className="text-2xl font-bold text-[#296A7A]">{query.freeFullTextCount}</p>
                                 </div>
                               </div>
                             </div>
                             <div className="flex justify-between items-center mt-2 text-sm">
                               <div className="flex items-center">
-                                <FaFileAlt className="mr-1" />
-                                <span>{query.collectedDocuments.pubmed + query.collectedDocuments.semanticScholar} docs</span>
                               </div>
                               <div className="flex space-x-2">
-                                <span className="bg-[#62B6CB] text-white rounded-full px-2 py-1">
+                                <span className="bg-[#D5F7FF] text-[#296A7A] rounded-xl px-2 py-1 font-bold">
                                   PubMed: {query.collectedDocuments.pubmed}
                                 </span>
-                                <span className="bg-[#62B6CB] text-white rounded-full px-2 py-1">
+                                <span className="bg-[#D5F7FF] text-[#296A7A] rounded-xl px-2 py-1 font-bold">
                                   Semantic Scholar: {query.collectedDocuments.semanticScholar}
                                 </span>
                               </div>
@@ -266,8 +265,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
                                   datasets: [{
                                     label: 'Papers per Year',
                                     data: Object.values(query.yearDistribution),
-                                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: '#296A7A',
+                                    borderColor: '#296A7A',
                                     borderWidth: 1,
                                   }]
                                 }} 

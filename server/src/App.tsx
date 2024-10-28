@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaHeartbeat, FaSearch, FaFileAlt, FaProjectDiagram, FaExchangeAlt } from 'react-icons/fa';
-import QueryGenerator from './components/QueryGenerator';
-import DocumentAnalysis from './components/DocumentAnalysis';
-import FilteringDiagram from './components/FilteringDiagram';
-import DuplicateAnalysis from './components/DuplicateAnalysis';
+import { FaHome } from 'react-icons/fa';
 import LandingPage from './components/LandingPage';
 import logo from './utils/quinten-health-logo.png'; 
 // Add these type definitions
@@ -98,11 +94,11 @@ const App: React.FC = () => {
           <div className="flex items-center">
             <button 
               onClick={() => window.location.href = '/'}
-              className="text-#62B6CB-600 hover:text-[#62B6CB] p-1 rounded-full hover:bg-[#62B6CB]-50 transition-colors mr-3"
+              className="bg-[#62B6CB] p-1.5 rotate-45 hover:bg-[#62B6CB]/80 transition-colors mr-3 rounded-lg"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
+              <div className="-rotate-45">
+                <FaHome className="w-4 h-4 text-black" />
+              </div>
             </button>
             <h1 className="text-xl font-bold text-[#62B6CB]-700">Q-SLR</h1>
           </div>

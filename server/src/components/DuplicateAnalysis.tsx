@@ -83,32 +83,41 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries }) =
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="w-7/8 p-6">
+      <div className="w-full p-6">
         <h1 className="text-2xl font-bold text-black mb-6 text-center">Duplicate analysis</h1>
         
-        <div className="flex items-start space-x-6 mb-8">
+        <div className="flex items-center space-x-6 mb-8">
           {/* Query Selector - Always visible */}
-          <div className="w-1/6">
+          <div className="w-1/4 flex items-center">
             <div className="relative h-full">
               <select
                 value={selectedQuery?.id || ''}
                 onChange={handleQuerySelect}
-                className="w-full h-[50px] pl-10 pr-8 py-2 border border-[#BDBDBD] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#62B6CB] appearance-none border-b-4"
+                className="w-full h-[50px] pl-10 pr-8 py-2 border border-[#BDBDBD] rounded-xl 
+                focus:outline-none focus:ring-2 focus:ring-[#62B6CB] appearance-none border-b-4 
+                font-bold bg-white hover:bg-gray-50 transition-colors duration-200
+                cursor-pointer shadow-sm hover:shadow-md"
               >
-                <option value="">Select a query</option>
+                <option value="" className="text-gray-500 bg-white hover:bg-gray-50">
+                  Select a query
+                </option>
                 {savedQueries.map(query => (
-                  <option key={query.id} value={query.id}>
+                  <option 
+                    key={query.id} 
+                    value={query.id}
+                    className="py-2 text-gray-800 hover:bg-gray-50"
+                  >
                     {query.name}
                   </option>
                 ))}
               </select>
               {/* Folder icon on the left */}
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <div className="absolute top-4 left-3">
                 <FaFolder className="text-[#62B6CB]" />
               </div>
               {/* Down arrow on the right */}
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                <svg className="w-4 h-4 text-[#62B6CB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="absolute top-4 right-3 ">
+                <svg className="w-4 h-4 text-[#62B6CB] " fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
@@ -118,26 +127,26 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries }) =
           {/* Statistics Box - Always visible with placeholder values */}
           <div className="w-full flex items-center justify-between h-[50px] bg-white rounded-xl border border-[#BDBDBD] p-4 border-b-4">
             <div className="flex items-center justify-start">
-              <span className="text-sm text-black">Pubmed papers</span>
-              <span className="px-3 py-1 rounded-full bg-[#62B6CB] text-white text-sm font-medium ml-2">
+              <span className="text-sm text-black font-bold">Pubmed papers</span>
+              <span className="px-3 py-1 rounded-xl bg-[#D5F7FF] text-[#296A7A] text-sm font-bold ml-2">
                 {selectedQuery ? selectedQuery.collectedDocuments.pubmed : '-'}
               </span>
             </div>
             <div className="flex items-center justify-start">
-              <span className="text-sm text-black">Semantic Scholar Papers</span>
-              <span className="px-3 py-1 rounded-full bg-[#62B6CB] text-white text-sm font-medium ml-2">
+              <span className="text-sm text-black font-bold">Semantic Scholar Papers</span>
+              <span className="px-3 py-1 rounded-xl bg-[#D5F7FF] text-[#296A7A] text-sm font-bold ml-2">
                 {selectedQuery ? selectedQuery.collectedDocuments.semanticScholar : '-'}
               </span>
             </div>
             <div className="flex items-center justify-start">
-              <span className="text-sm text-black">Potential Duplicates</span>
-              <span className="px-3 py-1 rounded-full bg-[#FFD700] text-black text-sm font-medium ml-2">
+              <span className="text-sm text-black font-bold">Potential Duplicates</span>
+              <span className="px-3 py-1 rounded-xl bg-[#FFE299] text-[#664900]text-sm font-bold ml-2">
                 {duplicatePairs.length || '-'}
               </span>
             </div>
             <div className="flex items-center justify-start">
-              <span className="text-sm text-black">Removed Duplicates</span>
-              <span className="px-3 py-1 rounded-full bg-[#98FB98] text-black text-sm font-medium ml-2">
+              <span className="text-sm text-black font-bold">Removed Duplicates</span>
+              <span className="px-3 py-1 rounded-xl bg-[#D7ECD4] text-[#408038] text-sm font-bold ml-2">
                 {removedDuplicates || '-'}
               </span>
             </div>
