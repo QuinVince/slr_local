@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch, FaExchangeAlt, FaFolder } from 'react-icons/fa';
+import { HiMiniArrowUturnLeft } from "react-icons/hi2";
 import { SavedQuery } from '../App';
 import { mockDuplicatePairs } from '../mockData';
 import DuplicateAnalysisTable from './DuplicateAnalysisTable';
 
 interface DuplicateAnalysisProps {
   savedQueries: SavedQuery[];
+  onReturn: () => void;
+  onUpdateQuery: (query: SavedQuery) => void;
 }
 
 export interface DuplicatePair {
@@ -21,7 +24,7 @@ export interface DuplicatePair {
   proximityScore: number;
 }
 
-const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries }) => {
+const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries, onReturn, onUpdateQuery }) => {
   const [selectedQuery, setSelectedQuery] = useState<SavedQuery | null>(null);
   const [duplicatePairs, setDuplicatePairs] = useState<DuplicatePair[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -79,6 +82,23 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries }) =
     setRemovedDuplicates(prev => prev + selectedPairs.size);
     setSelectedPairs(new Set());
     setDisplayedPairs(Math.min(displayedPairs, newDuplicatePairs.length));
+  };
+
+  const handleSaveAndReturn = () => {
+    if (selectedQuery) {
+      // Create updated query with removedDuplicates count
+      const updatedQuery = {
+        ...selectedQuery,
+        collectedDocuments: {
+          ...selectedQuery.collectedDocuments,
+          removedDuplicates: removedDuplicates
+        }
+      };
+
+      // Update the query in the parent component's state
+      onUpdateQuery(updatedQuery);
+      onReturn();
+    }
   };
 
   return (
@@ -155,19 +175,34 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries }) =
 
         {/* Analysis Table - Only shown when a query is selected and duplicates exist */}
         {selectedQuery && duplicatePairs.length > 0 && (
-          <DuplicateAnalysisTable
-            duplicatePairs={duplicatePairs}
-            onCheckAbstracts={handleCheckAbstracts}
-            onTogglePair={handleTogglePair}
-            selectedPairs={selectedPairs}
-            onSelectAllPairs={handleSelectAllPairs}
-            onRemoveDuplicates={handleRemoveDuplicates}
-            displayedPairs={displayedPairs}
-            onSeeMore={handleSeeMorePairs}
-            modalOpen={modalOpen}
-            selectedPair={selectedPair}
-            onCloseModal={() => setModalOpen(false)}
-          />
+          <>
+            <DuplicateAnalysisTable
+              duplicatePairs={duplicatePairs}
+              onCheckAbstracts={handleCheckAbstracts}
+              onTogglePair={handleTogglePair}
+              selectedPairs={selectedPairs}
+              onSelectAllPairs={handleSelectAllPairs}
+              onRemoveDuplicates={handleRemoveDuplicates}
+              displayedPairs={displayedPairs}
+              onSeeMore={handleSeeMorePairs}
+              modalOpen={modalOpen}
+              selectedPair={selectedPair}
+              onCloseModal={() => setModalOpen(false)}
+            />
+
+            {/* Save and Return Button */}
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={handleSaveAndReturn}
+                className="flex items-center px-6 py-3 bg-[#62B6CB] text-white rounded-xl 
+                hover:bg-[#5AA3B7] transition-colors duration-200 font-semibold
+                focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2"
+              >
+                <HiMiniArrowUturnLeft className="w-5 h-5 mr-2" />
+                Save and Return
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>

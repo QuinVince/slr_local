@@ -13,6 +13,7 @@ export interface SavedQuery {
   collectedDocuments: {
     pubmed: number;
     semanticScholar: number;
+    removedDuplicates?: number;
   };
   paperCount: number;
   freeFullTextCount: number;
@@ -87,6 +88,12 @@ const App: React.FC = () => {
     setAnalysisData(prev => ({ ...prev, ...newData }));
   };
 
+  const handleUpdateQuery = (updatedQuery: SavedQuery) => {
+    setSavedQueries(prev => 
+      prev.map(q => q.id === updatedQuery.id ? updatedQuery : q)
+    );
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <header className="bg-white border-b fixed w-full top-0 z-50 h-12"> {/* Added h-12 for fixed height */}
@@ -111,6 +118,7 @@ const App: React.FC = () => {
           onSaveQuery={handleSaveQuery}
           onRemoveQuery={handleRemoveQuery}
           onClearQueries={handleClearAllQueries}
+          onUpdateQuery={handleUpdateQuery}
           analysisData={analysisData}
           updateAnalysisData={updateAnalysisData}
         />

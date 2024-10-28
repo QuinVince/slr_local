@@ -17,11 +17,12 @@ interface LandingPageProps {
   onSaveQuery: (query: SavedQuery) => void;
   onRemoveQuery: (queryId: string) => void;
   onClearQueries: () => void;
+  onUpdateQuery: (query: SavedQuery) => void;
   analysisData: AnalysisData;
   updateAnalysisData: (newData: Partial<AnalysisData>) => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, onRemoveQuery, onClearQueries, analysisData, updateAnalysisData }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, onRemoveQuery, onClearQueries, onUpdateQuery, analysisData, updateAnalysisData }) => {
   const [activeComponent, setActiveComponent] = useState<string>('query');
   const [description, setDescription] = useState('');
   const [showQueryGenerator, setShowQueryGenerator] = useState(false);
@@ -67,6 +68,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
     setShowComponent(true);
   };
 
+  const handleReturn = () => {
+    setShowComponent(false);
+    setActiveComponent('query');
+  };
+
   const renderComponent = () => {
     if (showQueryGenerator) {
       return (
@@ -82,7 +88,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
     switch (activeComponent) {
       case 'duplicate':
         return showComponent && (
-          <DuplicateAnalysis savedQueries={savedQueries} />
+          <DuplicateAnalysis 
+            savedQueries={savedQueries} 
+            onReturn={handleReturn}
+            onUpdateQuery={onUpdateQuery}
+          />
         );
       case 'document':
         return showComponent && (
@@ -256,6 +266,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
                                 <span className="bg-[#D5F7FF] text-[#296A7A] rounded-xl px-2 py-1 font-bold">
                                   Semantic Scholar: {query.collectedDocuments.semanticScholar}
                                 </span>
+                                {query.collectedDocuments.removedDuplicates !== undefined && (
+                                  <span className="bg-[#D7ECD4] text-[#408038] rounded-xl px-2 py-1 font-bold">
+                                    Removed Duplicates: {query.collectedDocuments.removedDuplicates}
+                                  </span>
+                                )}
                               </div>
                             </div>
                             <div className="mt-4" style={{ height: '200px' }}>
