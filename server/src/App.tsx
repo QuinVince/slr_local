@@ -107,7 +107,7 @@ const App: React.FC = () => {
                 <FaHome className="w-4 h-4 text-black" />
               </div>
             </button>
-            <h1 className="text-xl font-bold text-[#62B6CB]-700">Q-SLR</h1>
+            <h1 className="text-xl font-bold text-[#62B6CB]-700">Systematic Review AI Assistant</h1>
           </div>
           <img src={logo} alt="Logo" className="h-10 w-auto my-1" />
         </div>
