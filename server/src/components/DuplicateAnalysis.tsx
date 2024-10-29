@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaExchangeAlt, FaFolder } from 'react-icons/fa';
+import { FaSearch, FaExchangeAlt, FaFolder, FaCheck, FaCheckDouble } from 'react-icons/fa';
 import { HiMiniArrowUturnLeft } from "react-icons/hi2";
 import { SavedQuery } from '../App';
 import { mockDuplicatePairs } from '../mockData';
@@ -32,17 +32,25 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries, onR
   const [selectedPairs, setSelectedPairs] = useState<Set<number>>(new Set());
   const [displayedPairs, setDisplayedPairs] = useState(5);
   const [removedDuplicates, setRemovedDuplicates] = useState(0);
+  const [isSaved, setIsSaved] = useState(false);
 
   const handleQuerySelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const query = savedQueries.find(q => q.id === event.target.value);
     if (query) {
       setSelectedQuery(query);
-      setDuplicatePairs(mockDuplicatePairs);
-      setRemovedDuplicates(0);
+      setRemovedDuplicates(query.collectedDocuments.removedDuplicates || 0);
+      const remainingPairs = mockDuplicatePairs.slice(query.collectedDocuments.removedDuplicates || 0);
+      setDuplicatePairs(remainingPairs);
       setSelectedPairs(new Set());
       setDisplayedPairs(5);
     }
   };
+
+  useEffect(() => {
+    if (selectedQuery?.collectedDocuments.removedDuplicates !== undefined) {
+      setRemovedDuplicates(selectedQuery.collectedDocuments.removedDuplicates);
+    }
+  }, [selectedQuery]);
 
   const handleCheckAbstracts = (id: number) => {
     const pair = duplicatePairs.find(p => p.id === id);
@@ -79,14 +87,27 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries, onR
   const handleRemoveDuplicates = () => {
     const newDuplicatePairs = duplicatePairs.filter(pair => !selectedPairs.has(pair.id));
     setDuplicatePairs(newDuplicatePairs);
-    setRemovedDuplicates(prev => prev + selectedPairs.size);
+    const newRemovedCount = removedDuplicates + selectedPairs.size;
+    setRemovedDuplicates(newRemovedCount);
+    
+    if (selectedQuery) {
+      const updatedQuery = {
+        ...selectedQuery,
+        collectedDocuments: {
+          ...selectedQuery.collectedDocuments,
+          removedDuplicates: newRemovedCount
+        }
+      };
+      onUpdateQuery(updatedQuery);
+      setSelectedQuery(updatedQuery);
+    }
+    
     setSelectedPairs(new Set());
     setDisplayedPairs(Math.min(displayedPairs, newDuplicatePairs.length));
   };
 
   const handleSaveAndReturn = () => {
     if (selectedQuery) {
-      // Create updated query with removedDuplicates count
       const updatedQuery = {
         ...selectedQuery,
         collectedDocuments: {
@@ -95,9 +116,12 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries, onR
         }
       };
 
-      // Update the query in the parent component's state
       onUpdateQuery(updatedQuery);
-      onReturn();
+      setIsSaved(true);
+      
+      setTimeout(() => {
+        setIsSaved(false);
+      }, 2000);
     }
   };
 
@@ -174,32 +198,45 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries, onR
         </div>
 
         {/* Analysis Table - Only shown when a query is selected and duplicates exist */}
-        {selectedQuery && duplicatePairs.length > 0 && (
+        {selectedQuery && (
           <>
-            <DuplicateAnalysisTable
-              duplicatePairs={duplicatePairs}
-              onCheckAbstracts={handleCheckAbstracts}
-              onTogglePair={handleTogglePair}
-              selectedPairs={selectedPairs}
-              onSelectAllPairs={handleSelectAllPairs}
-              onRemoveDuplicates={handleRemoveDuplicates}
-              displayedPairs={displayedPairs}
-              onSeeMore={handleSeeMorePairs}
-              modalOpen={modalOpen}
-              selectedPair={selectedPair}
-              onCloseModal={() => setModalOpen(false)}
-            />
+            {duplicatePairs.length > 0 && (
+              <DuplicateAnalysisTable
+                duplicatePairs={duplicatePairs}
+                onCheckAbstracts={handleCheckAbstracts}
+                onTogglePair={handleTogglePair}
+                selectedPairs={selectedPairs}
+                onSelectAllPairs={handleSelectAllPairs}
+                onRemoveDuplicates={handleRemoveDuplicates}
+                displayedPairs={displayedPairs}
+                onSeeMore={handleSeeMorePairs}
+                modalOpen={modalOpen}
+                selectedPair={selectedPair}
+                onCloseModal={() => setModalOpen(false)}
+              />
+            )}
 
-            {/* Save and Return Button */}
+            {/* Updated Save Button */}
             <div className="flex justify-center mt-8">
               <button
                 onClick={handleSaveAndReturn}
-                className="flex items-center px-6 py-3 bg-[#62B6CB] text-white rounded-xl 
-                hover:bg-[#5AA3B7] transition-colors duration-200 font-semibold
-                focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2"
+                disabled={isSaved}
+                className={`flex items-center px-6 py-3 bg-[#62B6CB] text-white rounded-xl 
+                transition-colors duration-200 font-semibold
+                focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2
+                ${isSaved ? 'bg-[#408038] hover:bg-[#408038]' : 'hover:bg-[#5AA3B7]'}`}
               >
-                <HiMiniArrowUturnLeft className="w-5 h-5 mr-2" />
-                Save and Return
+                {isSaved ? (
+                  <>
+                    <FaCheckDouble className="w-5 h-5 mr-2" />
+                    Saved
+                  </>
+                ) : (
+                  <>
+                    <FaCheck className="w-5 h-5 mr-2" />
+                    Save Changes
+                  </>
+                )}
               </button>
             </div>
           </>

@@ -104,7 +104,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ savedQueries, onSaveQuery, on
         );
       case 'diagram':
         return showComponent && (
-          <FilteringDiagram initialData={analysisData} />
+          <FilteringDiagram 
+            savedQueries={savedQueries}
+          />
         );
       default:
         return null;
