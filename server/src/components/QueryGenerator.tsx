@@ -120,8 +120,43 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
   };
 
   const generatePubMedQuery = async (query: string, answers: Record<string, string>) => {
-    const response = await axios.post('http://localhost:8000/generate_pubmed_query', { query, answers });
-    return response.data;
+    try {
+      const response = await axios.post('http://localhost:8000/generate_pubmed_query', { query, answers });
+      
+      // Format the received query with proper structure
+      const rawQuery = response.data.query.replace(/```/g, '').trim();
+      
+      // Split the query into main groups (split by AND)
+      const mainGroups: string[] = rawQuery.split(/\bAND\b/).map((group: string) => group.trim());
+      
+      // Format each group
+      const formattedGroups: string[] = mainGroups.map((group: string) => {
+        // Remove extra parentheses
+        let cleanGroup: string = group.replace(/^\(+|\)+$/g, '').trim();
+        
+        // Split by OR and clean up each term
+        const terms: string[] = cleanGroup.split(/\bOR\b/).map((term: string) => {
+          // Remove extra quotes and trim
+          let cleanTerm: string = term.trim().replace(/^["']+|["']+$/g, '');
+          // Only add quotes if term contains spaces and isn't already quoted
+          if (cleanTerm.includes(' ') && !cleanTerm.includes('"')) {
+            cleanTerm = `"${cleanTerm}"`;
+          }
+          return cleanTerm;
+        });
+        
+        // Join terms with OR and wrap in parentheses
+        return `(${terms.join(' OR ')})`;
+      });
+      
+      // Join groups with AND
+      const formattedQuery = formattedGroups.join('\n\nAND\n\n');
+      
+      return { query: formattedQuery };
+    } catch (error) {
+      console.error('Error generating PubMed query:', error);
+      throw error;
+    }
   };
 
   const estimateDocuments = async (query: string) => {
@@ -372,13 +407,15 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
             ) : (
               <div className="flex flex-col gap-8">
                 <div className="w-full">
-                  <textarea
-                    value={pubMedQuery}
-                    onChange={(e) => setPubMedQuery(e.target.value)}
-                    className="text-base w-full px-3 py-2 border border-[#BDBDBD] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2 flex items-center justify-center"
-                    rows={5}
-                    placeholder="Generated PubMed query..."
-                  />
+                  <div className="bg-white p-4 rounded-xl border-2 border-[#62B6CB] shadow-sm">
+                    <pre className="whitespace-pre-wrap font-mono text-sm text-gray-700">
+                      {pubMedQuery.split('\n').map((line, index) => (
+                        <div key={index} className={`py-1 ${line.trim() === 'AND' ? 'pl-4 text-[#62B6CB] font-bold' : ''}`}>
+                          {line}
+                        </div>
+                      ))}
+                    </pre>
+                  </div>
                   {estimatedDocuments !== null && (
                     <p className="mt-2 text-[#62B6CB]">
                       Estimated number of documents: <span className="font-bold">{estimatedDocuments}</span>

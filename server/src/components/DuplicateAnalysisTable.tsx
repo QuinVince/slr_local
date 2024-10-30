@@ -29,16 +29,38 @@ const DuplicateAnalysisTable: React.FC<DuplicateAnalysisTableProps> = ({
   selectedPair,
   onCloseModal,
 }) => {
+  // Helper function to get color based on proximity score
+  const getProximityScoreColor = (score: number) => {
+    if (score >= 0.98) return 'bg-red-100 text-red-700 border-red-300';
+    if (score >= 0.95) return 'bg-orange-100 text-orange-700 border-orange-300';
+    return 'bg-yellow-100 text-yellow-700 border-yellow-300';
+  };
+
+  // Helper function to get dot color based on proximity score
+  const getProximityDotColor = (score: number) => {
+    if (score >= 0.98) return 'bg-red-500';
+    if (score >= 0.95) return 'bg-orange-500';
+    return 'bg-yellow-500';
+  };
+
+  const getRemoveButtonStyles = () => {
+    if (selectedPairs.size === 0) {
+      return "inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-gray-400 bg-gray-100 cursor-not-allowed";
+    }
+    return "inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-white bg-red-500 hover:bg-red-600 transition-colors duration-200";
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-black">Potential duplicates comparison</h2>
         <button
           onClick={onRemoveDuplicates}
-          className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-red-600 bg-red-50 hover:bg-red-100"
           disabled={selectedPairs.size === 0}
+          className={getRemoveButtonStyles()}
         >
-          Remove selected
+          <FaTrash className="mr-2" />
+          {selectedPairs.size === 0 ? 'No duplicates selected' : `Remove ${selectedPairs.size} selected`}
         </button>
       </div>
 
@@ -65,12 +87,13 @@ const DuplicateAnalysisTable: React.FC<DuplicateAnalysisTableProps> = ({
               <tr key={pair.id} className="border-b border-[#BDBDBD]">
                 <td className="px-4 py-4 text-sm text-black">{pair.article1.title}</td>
                 <td className="px-4 py-4 text-sm text-black">{pair.article2.title}</td>
-                <td className="px-4 py-4">
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium bg-[#62B6CB] text-white">
-                    {pair.proximityScore.toFixed(1)}
+                <td className="px-4 py-4 text-center">
+                  <span className={`inline-flex items-center px-2.5 py-1 border rounded-xl text-sm font-medium ${getProximityScoreColor(pair.proximityScore)}`}>
+                    <div className={`w-2 h-2 rounded-full ${getProximityDotColor(pair.proximityScore)} mr-2`}></div>
+                    {pair.proximityScore.toFixed(2)}
                   </span>
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-4 text-center">
                   <button
                     onClick={() => onCheckAbstracts(pair.id)}
                     className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#62B6CB] text-white hover:bg-[#62B6CB]/90"

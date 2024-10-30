@@ -12,7 +12,7 @@ export const mockDuplicatePairs: DuplicatePair[] = [
       title: "Efficacy of Ocrelizumab in Relapsing-Remitting Multiple Sclerosis",
       abstract: "This comprehensive study investigates the impact of ocrelizumab on disease activity among adults with relapsing-remitting multiple sclerosis. Over a two-year period, 500 participants between 18 and 55 years old were randomly divided into an ocrelizumab treatment group and a placebo control group to assess the effects of the medication on relapse rates and disability progression."
     },
-    proximityScore: 1.0
+    proximityScore: 0.95
   },
   { 
     id: 2, 
