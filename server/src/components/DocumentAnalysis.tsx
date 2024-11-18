@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { FaFolder, FaCheck, FaTimes, FaQuestion, FaInfoCircle, FaMagic, FaTrash, FaFilter, FaFileAlt, FaUsers, FaCalendarAlt, FaArrowRight, FaCheckDouble, FaDownload, FaQuoteLeft } from 'react-icons/fa';
+import { FaFolder, FaCheck, FaTimes, FaQuestion, FaInfoCircle, FaMagic, FaTrash, FaFilter, FaFileAlt, FaUsers, FaCalendarAlt, FaArrowRight, FaCheckDouble, FaDownload, FaQuoteLeft, FaChevronUp, FaChevronDown, FaExternalLinkAlt } from 'react-icons/fa';
 import ReactSlider from 'react-slider';
 import styled from 'styled-components';
 import { SavedQuery, AnalysisData } from '../App'; // Import SavedQuery from App.tsx
@@ -27,6 +27,7 @@ export interface Document {
     expanded: boolean;
   };
   citationCount: number; // Add this line
+  pubmedLink?: string;  // Add this line
 }
 
 interface Criterion {
@@ -143,6 +144,21 @@ const ScrollableContainer = styled.div`
   scrollbar-color: #C2E2EB #F5F5F5;
 `;
 
+// Add this styled component for the dropdown
+const FilterDropdown = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 600px;
+  background: white;
+  border: 2px solid #62B6CB;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 30;
+  padding: 1rem;
+  margin-top: 0.5rem;
+`;
+
 const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updateAnalysisData, savedQueries }) => {
   const [newCriterion, setNewCriterion] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -160,6 +176,8 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
   const [activeTooltip, setActiveTooltip] = useState<{ docId: number; criterionId: number } | null>(null);
   const [showOnlyFullMatch, setShowOnlyFullMatch] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
+  const [showAnalysisResults, setShowAnalysisResults] = useState(true);
+  const [availableExamples, setAvailableExamples] = useState<string[]>(CRITERIA_EXAMPLES);
 
   useEffect(() => {
     if (selectedQuery && selectedQuery !== analysisData.selectedQuery) {
@@ -184,19 +202,26 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
     updateAnalysisData({ selectedQuery: query, documents: mockDocuments });
   };
 
-  const handleAddCriterion = () => {
-    if (newCriterion.trim()) {
+  const handleAddCriterion = (criterionText: string) => {
+    if (criterionText.trim()) {
       updateAnalysisData({
         criteria: [
           ...analysisData.criteria,
-          { id: analysisData.criteria.length + 1, description: newCriterion.trim() }
+          { id: analysisData.criteria.length + 1, description: criterionText.trim() }
         ]
       });
+      if (availableExamples.includes(criterionText)) {
+        setAvailableExamples(prev => prev.filter(example => example !== criterionText));
+      }
       setNewCriterion('');
     }
   };
 
   const handleRemoveCriterion = (id: number) => {
+    const removedCriterion = analysisData.criteria.find(c => c.id === id);
+    if (removedCriterion && CRITERIA_EXAMPLES.includes(removedCriterion.description)) {
+      setAvailableExamples(prev => [...prev, removedCriterion.description]);
+    }
     updateAnalysisData({
       criteria: analysisData.criteria.filter(criterion => criterion.id !== id)
     });
@@ -234,13 +259,13 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
             let tooltip = '';
             switch(result) {
               case 'Yes':
-                tooltip = `Strong evidence found supporting this criterion. Key points: ${['Statistically significant results', 'Large sample size', 'Well-designed methodology'][Math.floor(Math.random() * 3)]}`;
+                tooltip = `Criterion fullfilled. Key points: ${['Element clearly mentioned in the paper', 'Element can be inferred direclty from the abstract'][Math.floor(Math.random() * 3)]}`;
                 break;
               case 'No':
-                tooltip = `Evidence does not support this criterion. Reasons include: ${['Conflicting results', 'Small effect size', 'Potential bias in study design'][Math.floor(Math.random() * 3)]}`;
+                tooltip = `Criterion not fullfilled. Reasons include: ${['Element not stated in the paper', 'Element can not be inferred from the abstract'][Math.floor(Math.random() * 3)]}`;
                 break;
               case 'Uncertain':
-                tooltip = `More information needed. ${['Limited data available', 'Inconsistent findings across studies', 'Potential confounding factors not addressed'][Math.floor(Math.random() * 3)]}`;
+                tooltip = `More information needed. ${['Limited data available', 'Paper does not mention this informatino'][Math.floor(Math.random() * 3)]}`;
                 break;
             }
             mockTooltips[doc.id][criterion.id] = `Justification for Criteria ${criterion.id}: ${tooltip}`;
@@ -255,9 +280,11 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
     }, 3000);
   };
 
-  const handleDateRangeChange = useCallback((newValues: number[]) => {
-    setDateRange(newValues);
-  }, []);
+  const handleDateRangeChange = (value: number | readonly number[], index: number) => {
+    // Convert the value to an array of numbers
+    const newValues = Array.isArray(value) ? value : [value, dateRange[1]];
+    setDateRange(newValues as number[]);
+  };
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toISOString().split('T')[0];
@@ -358,8 +385,21 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
   // Add new handler for Enter key press
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && newCriterion.trim()) {
-      handleAddCriterion();
+      handleAddCriterion(newCriterion);
     }
+  };
+
+  // Add this function to check if any documents are selected
+  const hasSelectedDocuments = () => {
+    return analysisData.documents.some(doc => doc.selected);
+  };
+
+  // Update the button styles based on selection
+  const getAnalyzeButtonStyles = () => {
+    if (!hasSelectedDocuments()) {
+      return "w-full bg-gray-200 text-gray-400 px-4 py-2 rounded-md flex items-center justify-center cursor-not-allowed";
+    }
+    return "w-full bg-[#62B6CB] text-white px-4 py-2 rounded-md hover:bg-[#5AA3B7] disabled:bg-gray-300 flex items-center justify-center transition-colors duration-200";
   };
 
   return (
@@ -394,54 +434,62 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
               </svg>
             </div>
         </div>
-        {/* Tooltip */}
-        {showTooltip && (
-          <div className="mb-6 rounded-md ">
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="font-semibold text-gray-700">Criteria definition:</h3>
-              <button
-                onClick={() => setShowTooltip(false)}
-                className="text-[#62B6CB] text-sm underline hover:text-gray-500"
-              >
-                Hide
-              </button>
+
+        {/* Show Tooltip and Criteria section only when a query is selected */}
+        {analysisData.selectedQuery && (
+          <>
+            {/* Tooltip */}
+            {showTooltip && (
+              <div className="mb-6 rounded-md">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-semibold text-gray-700">Criteria definition:</h3>
+                  <button
+                    onClick={() => setShowTooltip(false)}
+                    className="text-[#62B6CB] text-sm underline hover:text-gray-500"
+                  >
+                    Hide
+                  </button>
+                </div>
+                <p className="text-sm text-gray-600">
+                  We encourage you to use natural language instead of keywords.
+                  Example: "I want to select publications that mention one specific thing"
+                  This allows the tool to provide more relevant results.
+                </p>
+              </div>
+            )}
+
+            {/* Criteria Input */}
+            <div className="mb-6">
+              <div className="w-full rounded-2xl border-4 border-[#C2E2EB]">
+                <input
+                  type="text"
+                  value={newCriterion}
+                  onChange={(e) => setNewCriterion(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="w-full px-3 py-2 rounded-xl border-2 border-[#62B6CB] shadow focus:outline-none focus:ring-2"
+                  placeholder="Enter new criterion in natural language... (press Enter to add)"
+                />
+              </div>
             </div>
-            <p className="text-sm text-gray-600">
-              We encourage you to use natural language instead of keywords.
-              Example: "I want to select publications that mention one specific thing"
-              This allows the tool to provide more relevant results.
-            </p>
-          </div>
+
+            {/* Criteria Examples - Only show available ones */}
+            {availableExamples.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="font-semibold text-gray-700 mb-3">Example criteria:</h3>
+                {availableExamples.map((example, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleAddCriterion(example)}
+                    className="p-3 border border-[#62B6CB] rounded-md hover:bg-[#C2E2EB] 
+                    cursor-pointer transition-colors duration-200 text-sm"
+                  >
+                    {example}
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
-
-        {/* Modified Criteria Input - removed button */}
-        <div className="mb-6">
-          <div className="w-full rounded-2xl border-4 border-[#C2E2EB]">
-            <input
-              type="text"
-              value={newCriterion}
-              onChange={(e) => setNewCriterion(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className="w-full px-3 py-2 rounded-xl border-2 border-[#62B6CB] shadow focus:outline-none focus:ring-2"
-              placeholder="Enter new criterion in natural language... (press Enter to add)"
-            />
-          </div>
-        </div>
-
-        {/* Criteria Examples */}
-        <div className="space-y-2">
-          <h3 className="font-semibold text-gray-700 mb-3">Example criteria:</h3>
-          {CRITERIA_EXAMPLES.map((example, index) => (
-            <CriteriaExample
-              key={index}
-              example={example}
-              onSelect={(example) => {
-                setNewCriterion(example);
-                handleAddCriterion();
-              }}
-            />
-          ))}
-        </div>
       </div>
 
       {/* Right Panel */}
@@ -453,8 +501,9 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
             <div className="space-y-2 mb-4">
               {analysisData.criteria.map((criterion) => (
                 <div key={criterion.id} className="flex items-center justify-between gap-4 p-2 rounded-md">
-                  <span className="p-3 border border-[#62B6CB] rounded-md hover:bg-[#C2E2EB] text-left w-full transition-colors group">
-                    Criteria {criterion.id}: {criterion.description}
+                  <span className={`p-3 border border-[#62B6CB] rounded-md hover:bg-[#C2E2EB] text-left w-full transition-colors group
+                    ${CRITERIA_EXAMPLES.includes(criterion.description) ? 'bg-[#F0F9FB]' : ''}`}>
+                    {criterion.description}
                   </span>
                   <button
                     onClick={() => handleRemoveCriterion(criterion.id)}
@@ -465,21 +514,27 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                 </div>
               ))}
             </div>
-            {/* Analyze Corpus button moved here */}
+            {/* Updated Analyze Corpus button */}
             <button
               onClick={handleAnalyzeDocuments}
-              disabled={isAnalyzing}
-              className="w-full bg-[#62B6CB] text-white px-4 py-2 rounded-md hover:bg-[#62B6CB] disabled:bg-gray-300 flex items-center justify-center"
+              disabled={isAnalyzing || !hasSelectedDocuments()}
+              className={getAnalyzeButtonStyles()}
             >
               <FaMagic className="mr-2" />
-              {isAnalyzing ? 'Analyzing...' : 'Analyze Corpus'}
+              {isAnalyzing ? (
+                'Analyzing...'
+              ) : hasSelectedDocuments() ? (
+                'Analyze corpus'
+              ) : (
+                'Select Documents to Analyze'
+              )}
             </button>
           </div>
         )}
 
         {/* Filters and Export */}
         {analysisData.selectedQuery && (
-          <div className="flex-shrink-0 mb-4"> {/* Added flex-shrink-0 */}
+          <div className="flex-shrink-0 mb-4 relative"> {/* Added relative positioning */}
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center space-x-2">
                 <button
@@ -501,9 +556,104 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                   </button>
                 )}
               </div>
+              
+            </div>
+
+            {/* Filters Dropdown */}
+            {showFilters && (
+              <FilterDropdown>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-semibold text-lg">Filters</h3>
+                  <button
+                    onClick={() => setShowFilters(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Keyword</label>
+                    <input
+                      type="text"
+                      value={filterKeyword}
+                      onChange={(e) => setFilterKeyword(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                      placeholder="Search keyword"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Study Type</label>
+                    <select
+                      value={studyType}
+                      onChange={(e) => setStudyType(e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="all">All Types</option>
+                      <option value="Meta-analysis">Meta-analysis</option>
+                      <option value="Systematic Review">Systematic Review</option>
+                      <option value="RCT">RCT</option>
+                      <option value="Cohort study">Cohort study</option>
+                      <option value="Case-control study">Case-control study</option>
+                      <option value="Case report">Case report</option>
+                      <option value="Case series">Case series</option>
+                      <option value="Expert opinion">Expert opinion</option>
+                      <option value="Narrative review">Narrative review</option>
+                      <option value="Animal study">Animal study</option>
+                      <option value="In vitro study">In vitro study</option>
+                    </select>
+                  </div>
+
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+                    <div className="px-2">
+                      <StyledSlider
+                        value={dateRange}
+                        onChange={handleDateRangeChange}
+                        min={new Date('2023-01-01').getTime()}
+                        max={new Date().getTime()}
+                        renderTrack={Track}
+                        renderThumb={Thumb}
+                      />
+                    </div>
+                    <div className="flex justify-between mt-2 text-xs text-gray-500">
+                      <span>{formatDate(dateRange[0])}</span>
+                      <span>{formatDate(dateRange[1])}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end mt-6">
+                  <button
+                    onClick={() => setShowFilters(false)}
+                    className="px-4 py-2 bg-[#62B6CB] text-white rounded-md hover:bg-[#5AA3B7]"
+                  >
+                    Apply Filters
+                  </button>
+                </div>
+              </FilterDropdown>
+            )}
+          </div>
+        )}
+        {/* Documents Section Title with Select All and Export - Only show when query is selected */}
+        {analysisData.selectedQuery && (
+          <div className="flex justify-between items-center mb-3">
+            <h1 className="font-semibold text-black">Documents</h1>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                  className="w-4 h-4 rounded border-[#BDBDBD] text-[#62B6CB] focus:ring-[#62B6CB] mr-2"
+                />
+                <span className="text-sm text-gray-600">Select all</span>
+              </div>
               <button
                 onClick={handleExport}
-                className="bg-[#62B6CB] text-white px-3 py-1 rounded-md hover:bg-[#62B6CB] flex items-center"
+                className="bg-[#62B6CB] text-white px-3 py-1 rounded-md hover:bg-[#5AA3B7] flex items-center transition-colors duration-200"
               >
                 <FaDownload className="mr-2" />
                 Export
@@ -511,97 +661,54 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
             </div>
           </div>
         )}
-        {/* Documents Section Title */}
-        <h1 className="font-semibold text-black mb-3">Documents</h1>
 
-        {/* Analysis Results Section - only shown after analysis is completed */}
+        {/* Analysis Results Section - with toggle */}
         {analysisCompleted && (
           <div className="mb-6 bg-[#F0F9FB] border border-[#C2E2EB] rounded-lg p-4 flex-shrink-0">
-            <h3 className="text-lg font-semibold text-[#62B6CB] mb-3 text-center">Analysis Results</h3>
-            {(() => {
-              const results = calculateAnalysisResults();
-              if (!results) return null;
+            <div className="flex justify-between items-center mb-3 h-30">
+              <h3 className="text-lg font-semibold text-[#62B6CB]">Analysis Results</h3>
+              <button
+                onClick={() => setShowAnalysisResults(!showAnalysisResults)}
+                className="text-[#62B6CB] hover:text-[#5AA3B7]"
+              >
+                {showAnalysisResults ? <FaChevronUp /> : <FaChevronDown />}
+              </button>
+            </div>
+            
+            {showAnalysisResults && (
+              <div className="animate-fadeIn">
+                {(() => {
+                  const results = calculateAnalysisResults();
+                  if (!results) return null;
 
-              return (
-                <div className="flex justify-between items-center mb-4 relative">
-                  <div className="w-[35%] bg-white p-3 rounded-md shadow-sm border border-[#E3F9FD] flex flex-col items-center">
-                    <p className="text-sm text-gray-600 text-center">Documents Analyzed</p>
-                    <p className="text-2xl font-bold text-[#62B6CB] text-center">{results.deduplicatedPapers}</p>
-                  </div>
-                  <div className="w-[30%] flex flex-col justify-center items-center">
-                    <div className="bg-white p-2 rounded-full border border-[#62B6CB] relative group mb-2">
-                      <FaArrowRight className="text-xl text-[#62B6CB]" />
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-                        {results.reductionPercentage}% removed
+                  return (
+                    <div className="flex justify-between items-center mb-4 relative">
+                      <div className="w-[35%] bg-white p-3 rounded-md shadow-sm border border-[#E3F9FD] flex flex-col items-center">
+                        <p className="text-sm text-gray-600 text-center">Documents Analyzed</p>
+                        <p className="text-2xl font-bold text-[#62B6CB] text-center">{results.deduplicatedPapers}</p>
+                      </div>
+                      <div className="w-[30%] flex flex-col justify-center items-center">
+                        <div className="bg-white p-2 rounded-full border border-[#62B6CB] relative group mb-2">
+                          <FaArrowRight className="text-xl text-[#62B6CB]" />
+                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                            {results.reductionPercentage}% removed
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-600 text-center">
+                          {results.reductionPercentage}% less abstracts to read
+                        </p>
+                      </div>
+                      <div className="w-[35%] bg-white p-3 rounded-md shadow-sm border border-[#E3F9FD] flex flex-col items-center">
+                        <p className="text-sm text-gray-600 text-center">100% Criteria Matches</p>
+                        <p className="text-2xl font-bold text-[#62B6CB] text-center">
+                          {results.hundredPercentMatch}
+                        </p>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 text-center">
-                      {results.reductionPercentage}% less abstracts to read
-                    </p>
-                  </div>
-                  <div className="w-[35%] bg-white p-3 rounded-md shadow-sm border border-[#E3F9FD] flex flex-col items-center">
-                    <p className="text-sm text-gray-600 text-center">100% Criteria Matches</p>
-                    <p className="text-2xl font-bold text-[#62B6CB] text-center">
-                      {results.hundredPercentMatch}
-                    </p>
-                  </div>
-                </div>
-              );
-            })()}
-          </div>
-        )}
-
-        {/* Filters Popup */}
-        {showFilters && (
-          <div className="flex-shrink-0 mb-4"> {/* Added flex-shrink-0 */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Keyword</label>
-              <input
-                type="text"
-                value={filterKeyword}
-                onChange={(e) => setFilterKeyword(e.target.value)}
-                className="p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Search keyword"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
-              <div className="px-2">
-                <StyledSlider
-                  value={dateRange}
-                  onChange={(newValues: number | readonly number[], index: number) => handleDateRangeChange(newValues as number[])}
-                  min={new Date('2023-01-01').getTime()}
-                  max={new Date().getTime()}
-                  renderTrack={Track}
-                  renderThumb={Thumb}
-                />
+                  );
+                })()}
               </div>
-              <div className="flex justify-between mt-2 text-xs text-gray-500">
-                <span>{formatDate(dateRange[0])}</span>
-                <span>{formatDate(dateRange[1])}</span>
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Study Type</label>
-              <select
-                value={studyType}
-                onChange={(e) => setStudyType(e.target.value)}
-                className="p-2 border border-gray-300 rounded-md w-full"
-              >
-                    <option value="all">All Types</option>
-                    <option value="Meta-analysis">Meta-analysis</option>
-                    <option value="Systematic Review">Systematic Review</option>
-                    <option value="RCT">RCT</option>
-                    <option value="Cohort study">Cohort study</option>
-                    <option value="Case-control study">Case-control study</option>
-                    <option value="Case report">Case report</option>
-                    <option value="Case series">Case series</option>
-                    <option value="Expert opinion">Expert opinion</option>
-                    <option value="Narrative review">Narrative review</option>
-                    <option value="Animal study">Animal study</option>
-                    <option value="In vitro study">In vitro study</option>
-              </select>
-            </div>
+            )}
           </div>
         )}
 
@@ -644,7 +751,8 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                   </div>
                   
                   {doc.pico.expanded && (
-                    <div className="mt-2 bg-white p-3 rounded border border-[#62B6CB] ">
+                    <div className="mt-2 bg-white p-3 rounded border border-[#62B6CB] relative">
+                      <FaMagic className="absolute top-2 right-2 text-[#62B6CB] w-4 h-4" />
                       <h5 className="font-semibold mb-2">PICO Information</h5>
                       <ul className="list-disc pl-5">
                         <li><strong>Population:</strong> {doc.pico.population}</li>
@@ -658,6 +766,17 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                     <YearTag date={doc.date} />
                     <StudyTypeTag type={doc.studyType} />
                     <AuthorsTag authors={doc.authors} />
+                    {doc.pubmedLink && (
+                      <a
+                        href={doc.pubmedLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-auto hover:text-[#62B6CB] transition-colors duration-200"
+                        title="Open in PubMed"
+                      >
+                        <FaExternalLinkAlt className="w-4 h-4" />
+                      </a>
+                    )}
                   </div>
                 </div>
 
@@ -693,24 +812,7 @@ const DocumentAnalysis: React.FC<DocumentAnalysisProps> = ({ analysisData, updat
                   {(!analysisCompleted || !analyzedDocuments.includes(doc.id)) && (
                     <p className="text-sm text-gray-500">Select this document and click "Analyze" to see criteria fulfillment.</p>
                   )}
-                  <button
-                    onClick={() => handleIncludeDocument(doc.id)}
-                    className={`mt-4 px-3 py-1 rounded-full flex items-center justify-center transition-colors duration-200 ${
-                      includedDocuments.includes(doc.id)
-                        ? 'bg-[#62B6CB] text-white'
-                        : 'bg-white text-[#62B6CB] border border-[#62B6CB]'
-                    }`}
-                  >
-                    {includedDocuments.includes(doc.id) ? (
-                      <>
-                        <FaCheck className="mr-1" /> Added
-                      </>
-                    ) : (
-                      <>
-                        <FaFileAlt className="mr-1" /> Include in review
-                      </>
-                    )}
-                  </button>
+
                 </div>
               </div>
             </div>

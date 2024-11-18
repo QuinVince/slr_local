@@ -53,7 +53,7 @@ const DuplicateAnalysisTable: React.FC<DuplicateAnalysisTableProps> = ({
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-black">Potential duplicates comparison</h2>
+        <h2 className="text-xl font-semibold text-black">Potential duplicates comparison ({duplicatePairs.length})</h2>
         <button
           onClick={onRemoveDuplicates}
           disabled={selectedPairs.size === 0}

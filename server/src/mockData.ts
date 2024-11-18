@@ -118,7 +118,7 @@ export const mockDocuments: Document[] = [
       outcome: "Disease progression and quality of life",
       expanded: false
     },
-   // pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/28695471/"
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/28695471/",
   },
   {
     id: 2,
@@ -137,7 +137,7 @@ export const mockDocuments: Document[] = [
       outcome: "Relapse rates and disease progression",
       expanded: false
     },
-   // pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/32216597/"
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/32216597/",
   },
   {
     id: 3,
@@ -156,7 +156,7 @@ export const mockDocuments: Document[] = [
       outcome: "Brain atrophy rates and disability progression",
       expanded: false
     },
-    //pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/",
   },
   {
     id: 4,
@@ -175,7 +175,7 @@ export const mockDocuments: Document[] = [
       outcome: "Long-term safety profile and efficacy measures",
       expanded: false
     },
-    //pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/",
   },
   {
     id: 5,
@@ -194,7 +194,7 @@ export const mockDocuments: Document[] = [
       outcome: "Changes in fatigue levels and cognitive function",
       expanded: false
     },
-   // pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/",
   },
   {
     id: 6,
@@ -213,7 +213,7 @@ export const mockDocuments: Document[] = [
       outcome: "Safety profile and relapse rate",
       expanded: false
     },
-  //  pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/",
   },
   {
     id: 7,
@@ -232,7 +232,7 @@ export const mockDocuments: Document[] = [
       outcome: "Pregnancy and fetal outcomes, postpartum disease activity",
       expanded: false
     },
-   // pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/",
   },
   {
     id: 8,
@@ -251,7 +251,7 @@ export const mockDocuments: Document[] = [
       outcome: "Relapse rate and disability progression",
       expanded: false
     },
-   // pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/",
   },
   {
     id: 9,
@@ -270,7 +270,7 @@ export const mockDocuments: Document[] = [
       outcome: "Time to confirmed disability progression",
       expanded: false
     },
-   // pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/",
   },
   {
     id: 10,
@@ -289,6 +289,6 @@ export const mockDocuments: Document[] = [
       outcome: "Incidence and types of infections",
       expanded: false
     },
-   // pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/"
+    pubmedLink: "https://pubmed.ncbi.nlm.nih.gov/",
   }
 ];

@@ -33,6 +33,7 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries, onR
   const [displayedPairs, setDisplayedPairs] = useState(5);
   const [removedDuplicates, setRemovedDuplicates] = useState(0);
   const [isSaved, setIsSaved] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const handleQuerySelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const query = savedQueries.find(q => q.id === event.target.value);
@@ -89,6 +90,7 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries, onR
     setDuplicatePairs(newDuplicatePairs);
     const newRemovedCount = removedDuplicates + selectedPairs.size;
     setRemovedDuplicates(newRemovedCount);
+    setHasChanges(true);
     
     if (selectedQuery) {
       const updatedQuery = {
@@ -107,7 +109,7 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries, onR
   };
 
   const handleSaveAndReturn = () => {
-    if (selectedQuery) {
+    if (selectedQuery && hasChanges) {
       const updatedQuery = {
         ...selectedQuery,
         collectedDocuments: {
@@ -118,11 +120,22 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries, onR
 
       onUpdateQuery(updatedQuery);
       setIsSaved(true);
+      setHasChanges(false);
       
       setTimeout(() => {
         setIsSaved(false);
       }, 2000);
     }
+  };
+
+  const getSaveButtonStyles = () => {
+    if (isSaved) {
+      return "flex items-center px-6 py-3 bg-[#408038] text-white rounded-xl transition-colors duration-200 font-semibold";
+    }
+    if (!hasChanges) {
+      return "flex items-center px-6 py-3 bg-gray-200 text-gray-400 rounded-xl transition-colors duration-200 font-semibold cursor-not-allowed";
+    }
+    return "flex items-center px-6 py-3 bg-[#62B6CB] text-white rounded-xl hover:bg-[#5AA3B7] transition-colors duration-200 font-semibold focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2";
   };
 
   return (
@@ -226,20 +239,17 @@ const DuplicateAnalysis: React.FC<DuplicateAnalysisProps> = ({ savedQueries, onR
           <div className="flex justify-center mt-8">
             <button
               onClick={handleSaveAndReturn}
-              disabled={isSaved}
-              className={`flex items-center px-6 py-3 bg-[#62B6CB] text-white rounded-xl 
-              transition-colors duration-200 font-semibold
-              focus:outline-none focus:ring-2 focus:ring-[#62B6CB] focus:ring-offset-2
-              ${isSaved ? 'bg-[#62B6CB] hover:bg-[#62B6CB]' : 'hover:bg-[#5AA3B7]'}`}
+              disabled={!hasChanges || isSaved}
+              className={getSaveButtonStyles()}
             >
               {isSaved ? (
                 <>
-                  <FaCheck className="w-5 h-5 mr-2 text-[#" />
+                  <FaCheck className="w-5 h-5 mr-2" />
                   Saved
                 </>
               ) : (
                 <>
-                  Save Changes
+                  {hasChanges ? 'Save Changes' : 'No Changes to Save'}
                 </>
               )}
             </button>

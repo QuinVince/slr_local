@@ -29,6 +29,7 @@ export interface AnalysisData {
     date: string;
     authors: string[];
     citationCount: number; // Add this line
+    pubmedLink?: string;  // Add this line
     selected: boolean;
     abstractExpanded: boolean;
     studyType: 'Meta-analysis' | 'Systematic Review' | 'RCT' | 'Cohort study' | 'Case-control study' | 'Case report' | 'Case series' | 'Expert opinion' | 'Narrative review' | 'Animal study' | 'In vitro study';

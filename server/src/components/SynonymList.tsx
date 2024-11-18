@@ -66,8 +66,10 @@ const SynonymList: React.FC<SynonymListProps> = ({
               onClick={() => onSynonymClick(synonym)}
               className="inline-flex items-center px-3 py-1 rounded-full bg-[#C2E2EB] text-black hover:bg-[#62B6CB] transition-colors"
             >
-              <FaPlusCircle className="mr-1 text-[#62B6CB] bg-white rounded-full" />
               {synonym}
+              <span className="ml-2">
+                <FaPlusCircle className="text-[#62B6CB] bg-white rounded-full" />
+              </span>
             </button>
           ))}
         </div>

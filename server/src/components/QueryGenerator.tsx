@@ -67,7 +67,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
     switch(step) {
       case 0: return '27%';
       case 1: return '54%';
-      case 2: return '81%';
+      case 2: return '79%';
       default: return '0%';
     }
   };
@@ -392,7 +392,7 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
             )}
           </div>
         );
-      case 1:  // Changed from case 2
+      case 1:  // PubMed Query step
         return (
           <div>
             <h2 className="text-2xl font-semibold mb-8 text-black text-center">Generated PubMed Query</h2>
@@ -408,13 +408,34 @@ const QueryGenerator: React.FC<QueryGeneratorProps> = ({ initialData, onSaveQuer
               <div className="flex flex-col gap-8">
                 <div className="w-full">
                   <div className="bg-white p-4 rounded-xl border-2 border-[#62B6CB] shadow-sm">
-                    <pre className="whitespace-pre-wrap font-mono text-sm text-gray-700">
-                      {pubMedQuery.split('\n').map((line, index) => (
-                        <div key={index} className={`py-1 ${line.trim() === 'AND' ? 'pl-4 text-[#62B6CB] font-bold' : ''}`}>
-                          {line}
-                        </div>
-                      ))}
-                    </pre>
+                  
+                    {pubMedQuery.split('\n\nAND\n\n').map((part, index, array) => (
+                      <React.Fragment key={index}>
+                        {index > 0 && (
+                          <div className="flex items-center my-2">
+                            <span className="px-4 py-1 text-[#62B6CB] rounded-full font-bold">
+                              AND
+                            </span>
+                            <div className="flex-grow  border-gray-200 ml-2"></div>
+                          </div>
+                        )}
+                        <textarea
+                          value={part}
+                          onChange={(e) => {
+                            const newParts = [...pubMedQuery.split('\n\nAND\n\n')];
+                            newParts[index] = e.target.value;
+                            setPubMedQuery(newParts.join('\n\nAND\n\n'));
+                          }}
+                          className="w-full font-mono text-xl text-gray-700 focus:outline-none resize-none"
+                          style={{
+                            lineHeight: '1.5',
+                            minHeight: '50px', 
+                            height: '50px',
+                            padding: '12px'
+                          }}
+                        />
+                      </React.Fragment>
+                    ))}
                   </div>
                   {estimatedDocuments !== null && (
                     <p className="mt-2 text-[#62B6CB]">
